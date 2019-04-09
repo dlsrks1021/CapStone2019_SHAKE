@@ -13,11 +13,11 @@ public class StartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_start);
 
         Handler hd = new Handler();
-        hd.postDelayed(new splashhandler(),500);
+        hd.postDelayed(new splashhandler(),1000);
     }
     private class splashhandler implements Runnable{
         public void run(){
-            startActivity(new Intent(getApplication(),MainActivity.class));
+            startActivity(new Intent(getApplication(),LoginActivity.class));
             StartActivity.this.finish();
         }
     }
