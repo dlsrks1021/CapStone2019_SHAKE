@@ -104,9 +104,12 @@ public class MainActivity extends AppCompatActivity
 
         PhpConnect task = new PhpConnect();
         ArrayList<String> bikeLatLng = new ArrayList<>();
+        ArrayList<BikeInfo> bikeList = new ArrayList<>();
         MarkerOptions markerOptions = new MarkerOptions();
+        int bikeCost = 0;
         float bikeLatitude = 0, bikeLongitude = 0;
         String bikeOwner = "", bikeType = "", bikeImgUrl = "", bikeCode = "";
+        String bikeLockId = "", bikeModelName = "";
 
         try {
             bikeLatLng = task.execute("http://13.125.229.179/getBikeInfo.php").get();
@@ -118,13 +121,19 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        for (int i = 0; i < bikeLatLng.size(); i += 6){
+        for (int i = 0; i < bikeLatLng.size(); i += 9){
             bikeOwner = bikeLatLng.get(i);
             bikeCode = bikeLatLng.get(i + 1);
             bikeLatitude = Float.parseFloat(bikeLatLng.get(i + 2));
             bikeLongitude = Float.parseFloat(bikeLatLng.get(i + 3));
-            bikeType = bikeLatLng.get(i + 4);
+            bikeCost = Integer.parseInt(bikeLatLng.get(i + 4));
             bikeImgUrl = bikeLatLng.get(i + 5);
+            bikeLockId = bikeLatLng.get(i + 6);
+            bikeModelName = bikeLatLng.get(i + 7);
+            bikeType = bikeLatLng.get(i + 8);
+
+            BikeInfo bike = new BikeInfo(bikeOwner, bikeCode, bikeLatitude, bikeLongitude, bikeCost, bikeImgUrl, bikeLockId, bikeModelName, bikeType);
+            bikeList.add(bike);
             LatLng bikeLocation = new LatLng(bikeLatitude, bikeLongitude);
             simpleAddMarker(map, markerOptions, bikeLocation, "공유자: " + bikeOwner, "자전거 종류: " + bikeType);
         }
@@ -134,16 +143,18 @@ public class MainActivity extends AppCompatActivity
         map.animateCamera(CameraUpdateFactory.zoomTo(10));
     }
 
-    private void simpleAddMarker(final GoogleMap map, MarkerOptions markerOptions, LatLng pos, String title, String context){
+    private void simpleAddMarker(final GoogleMap map, MarkerOptions markerOptions, LatLng pos, String title, String context) {
         markerOptions.position(pos);
         markerOptions.title(title);
         markerOptions.snippet(context);
         map.addMarker(markerOptions);
 
+    }
+
     public String[] getInfo(){
         String[] temp = new String[2];
         temp[0]=userID;
-        //temp[1]=userName;
+        temp[1]=userName;
         return temp;
 
     }
