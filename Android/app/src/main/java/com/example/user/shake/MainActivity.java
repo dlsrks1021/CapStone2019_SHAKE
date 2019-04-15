@@ -1,6 +1,7 @@
 package com.example.user.shake;
 
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 
 import android.os.Bundle;
@@ -38,19 +39,32 @@ public class MainActivity extends AppCompatActivity
         implements OnMapReadyCallback {
 
     ListView listView = null;
+    private String userName,userID;
+    public static Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        //Save User Information
+        Intent intent = getIntent();
+        userID = intent.getStringExtra("userID");
+        Toast.makeText(getApplicationContext(),userName,Toast.LENGTH_SHORT).show();
+        mContext=this;
+
+        // Navigation Bar implementation
         Toast.makeText(getApplicationContext(),"화면을 스와이프하시면 메뉴가 보입니다.",Toast.LENGTH_SHORT).show();
+
 
         FragmentManager fragmentManager = getFragmentManager();
         MapFragment mapFragment = (MapFragment)fragmentManager
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        
+        final String[] items = {userID+"님","Rent", "항목2", "항목3", "항목4"} ;
 
-        final String[] items = {"Rent", "항목2", "항목3", "항목4", "항목5"} ;
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, items) ;
 
         listView = (ListView) findViewById(R.id.drawer_menulist) ;
@@ -61,11 +75,11 @@ public class MainActivity extends AppCompatActivity
             public void onItemClick(AdapterView parent, View v, int position, long id) {
                 switch (position) {
                     case 0 : //List1
-                        Intent intent = new Intent(MainActivity.this, RentActivity.class);
-                        MainActivity.this.startActivity(intent);
+                        Toast.makeText(getApplicationContext(),"Welcome!",Toast.LENGTH_SHORT).show();
                         break ;
                     case 1 : //List2
-                        Toast.makeText(getApplicationContext(),"List2 Clicked",Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(MainActivity.this, RentActivity.class);
+                        MainActivity.this.startActivity(intent);
                         break ;
                     case 2 : //List3
                         Toast.makeText(getApplicationContext(),"List3 Clicked",Toast.LENGTH_SHORT).show();
@@ -83,6 +97,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
+
 
     @Override
     public void onMapReady(final GoogleMap map) {
@@ -124,5 +139,12 @@ public class MainActivity extends AppCompatActivity
         markerOptions.title(title);
         markerOptions.snippet(context);
         map.addMarker(markerOptions);
+
+    public String[] getInfo(){
+        String[] temp = new String[2];
+        temp[0]=userID;
+        //temp[1]=userName;
+        return temp;
+
     }
 }
