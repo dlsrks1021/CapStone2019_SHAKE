@@ -73,12 +73,25 @@ public class BikeRegisterActivity extends AppCompatActivity {
                 String sModel = model.getText().toString();
                 int iType = type.getSelectedItemPosition();
                 String sType = "";
+
                 switch (iType){
                     case 0:
-                        sType = "roadbike";
+                        sType = "로드자전거";
                         break;
                     case 1:
                         sType = "전기자전거";
+                        break;
+                    case 2:
+                        sType = "산악자전거";
+                        break;
+                    case 3:
+                        sType = "하이브리드자전거";
+                        break;
+                    case 4:
+                        sType = "미니벨로";
+                        break;
+                    case  5:
+                        sType = "기타자전거";
                         break;
                         default:
                             sType = "no bike type error" + Integer.toString(iType);

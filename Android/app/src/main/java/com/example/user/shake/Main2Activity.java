@@ -1,8 +1,11 @@
 package com.example.user.shake;
 
+import android.Manifest;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -15,37 +18,51 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 public class Main2Activity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener{
+
+    private GoogleMap mMap;
+
 
     ListView listView = null;
     private String userName,userID;
     TextView navTitle;
     TextView navContext;
+    public static Context mContext;
+    private ArrayList<BikeInfo> bikeList;
+    private int markerClickFlag = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
+        //Save User Information
         Intent intent = getIntent();
         userID = intent.getStringExtra("userID");
+        //Toast.makeText(getApplicationContext(),userName,Toast.LENGTH_SHORT).show();
+        mContext=this;
 
         navTitle = findViewById(R.id.textNavTitle);
         navContext = findViewById(R.id.textNavContext);
+
+
 
         //navTitle.setText(userID);
 
@@ -75,6 +92,8 @@ public class Main2Activity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+
+
 
     @Override
     public void onBackPressed() {
@@ -122,6 +141,11 @@ public class Main2Activity extends AppCompatActivity
             intent2.putExtra("userId", userID);
             Main2Activity.this.startActivity(intent2);
         }
+        else if (id == R.id.iteminfo) {
+            Intent intent2 = new Intent(Main2Activity.this, InfoActivity.class);
+            intent2.putExtra("userId", userID);
+            Main2Activity.this.startActivity(intent2);
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -133,12 +157,14 @@ public class Main2Activity extends AppCompatActivity
 
         PhpConnect task = new PhpConnect();
         ArrayList<String> bikeLatLng = new ArrayList<>();
-        ArrayList<BikeInfo> bikeList = new ArrayList<>();
+        bikeList = new ArrayList<>();
         MarkerOptions markerOptions = new MarkerOptions();
         int bikeCost = 0;
         double bikeLatitude = 0, bikeLongitude = 0;
         String bikeOwner = "", bikeType = "", bikeImgUrl = "", bikeCode = "";
         String bikeLockId = "", bikeModelName = "", bikeAddInfo = "";
+
+        mMap = map;
 
         try {
             bikeLatLng = task.execute("http://13.125.229.179/getBikeInfo.php").get();
@@ -165,12 +191,14 @@ public class Main2Activity extends AppCompatActivity
             BikeInfo bike = new BikeInfo(bikeOwner, bikeCode, bikeLatitude, bikeLongitude, bikeCost, bikeImgUrl, bikeLockId, bikeModelName, bikeType, bikeAddInfo);
             bikeList.add(bike);
             LatLng bikeLocation = new LatLng(bikeLatitude, bikeLongitude);
-            simpleAddMarker(map, markerOptions, bikeLocation, "공유자: " + bikeOwner, "자전거 종류: " + bikeType);
+            simpleAddMarker(map, markerOptions, bikeLocation, bikeOwner, "자전거 종류: " + bikeType);
         }
 
         LatLng SEOUL = new LatLng(37.56, 126.97);;
         map.moveCamera(CameraUpdateFactory.newLatLng(SEOUL));
         map.animateCamera(CameraUpdateFactory.zoomTo(10));
+
+        mMap.setOnMarkerClickListener(this);
     }
 
     private void simpleAddMarker(final GoogleMap map, MarkerOptions markerOptions, LatLng pos, String title, String context) {
@@ -178,7 +206,25 @@ public class Main2Activity extends AppCompatActivity
         markerOptions.title(title);
         markerOptions.snippet(context);
         map.addMarker(markerOptions);
+    }
 
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        String mOwner = marker.getTitle();
+
+        for (int i = 0; i < bikeList.size(); ++i){
+            if (bikeList.get(i).getBikeOwner() == mOwner && marker.getPosition().latitude == bikeList.get(i).getBikeLatitude()){
+                if (markerClickFlag == i){
+                    Intent intent = new Intent(Main2Activity.this, RentActivity.class);
+                    intent.putExtra("borrower", userID);
+                    intent.putExtra("bikecode", bikeList.get(i).getBikeCode());
+                    startActivity(intent);
+                }else{
+                    markerClickFlag = i;
+                }
+            }
+        }
+        return false;
     }
 
     public String[] getInfo(){

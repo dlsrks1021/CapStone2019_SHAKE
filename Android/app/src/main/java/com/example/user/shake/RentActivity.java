@@ -1,6 +1,7 @@
 package com.example.user.shake;
 
 import android.content.Intent;
+import android.icu.text.SimpleDateFormat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +18,8 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 
 public class RentActivity extends AppCompatActivity {
@@ -27,12 +30,13 @@ public class RentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_rent);
 
         String[] info = new String[2];
-        info=((MainActivity)MainActivity.mContext).getInfo();
+        info=((Main2Activity)Main2Activity.mContext).getInfo();
+
+        final Intent intent = getIntent();
 
         final Button rentbtn = (Button) findViewById(R.id.rent_button);
         final Button return_btn = (Button) findViewById(R.id.return_button);
         final TextView explain = (TextView) findViewById(R.id.explain);
-        final String bikecode = "7777";
         final String borrower = info[0];
         final String rentnumber_send;
 
@@ -91,7 +95,14 @@ public class RentActivity extends AppCompatActivity {
                     }
                 };
                 if(!explain.getText().equals("대여 중인 \n자전거가 있습니다")) {
-                    RentRequest rentRequest = new RentRequest(bikecode, borrower, "2019-04-03 12:00:01", "2019-04-03 15:00:01", 0, 0, responseListener);
+                    long time = System.currentTimeMillis();
+                    SimpleDateFormat dayTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                    String day = dayTime.format(new Date(time));
+                    Date date = new Date();
+                    Calendar cal = Calendar.getInstance(); cal.setTime(date); // 10분 더하기
+                    cal.add(Calendar.HOUR, 1);//return 할때 몇시간 빌리는지 넣어주면 됨
+                    String return_time = dayTime.format(cal.getTime()); System.out.println(day+"      "+ return_time);
+                    RentRequest rentRequest = new RentRequest(intent.getStringExtra("bikecode"), intent.getStringExtra("borrower"), day, return_time, 0, 0, responseListener);
                     RequestQueue queue = Volley.newRequestQueue(RentActivity.this);
                     queue.add(rentRequest);
                 }
