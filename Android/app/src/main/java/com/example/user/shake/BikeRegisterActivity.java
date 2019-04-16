@@ -99,20 +99,18 @@ public class BikeRegisterActivity extends AppCompatActivity {
                 String sAddInfo = addInfo.getText().toString();
                 String bikecode = owner+Double.toString(latitude)+sType;
 
-                Toast.makeText(getApplicationContext(),owner+sCost+imageurl+sLockId+sModel+sType+sAddInfo+bikecode,Toast.LENGTH_LONG).show();
-
                 ArrayList<String> queryResult;
 
                 PhpConnect task = new PhpConnect();
                 try {
                     queryResult = task.execute("http://13.125.229.179/insertBikeInfo.php?owner=" + owner + "&bikecode=" + bikecode + "&latitude=" + Double.toString(latitude) + "&longitude=" + Double.toString(longitude)
                             + "&cost=" + sCost + "&url=" + imageurl + "&lockId=" + sLockId + "&model=" + sModel + "&type=" + sType + "&addInfo=" + sAddInfo).get();
+                    finish();
                 }catch (ExecutionException e){
 
                 }catch (InterruptedException e){
 
                 }
-
 
             }
         });
