@@ -141,7 +141,7 @@ public class Main2Activity extends AppCompatActivity
             intent2.putExtra("userId", userID);
             Main2Activity.this.startActivity(intent2);
         }
-        else if (id == R.id.iteminfo) {
+        else if (id == R.id.itemInfo) {
             Intent intent2 = new Intent(Main2Activity.this, InfoActivity.class);
             intent2.putExtra("userId", userID);
             Main2Activity.this.startActivity(intent2);
@@ -179,8 +179,8 @@ public class Main2Activity extends AppCompatActivity
         for (int i = 0; i < bikeLatLng.size(); i += 10){
             bikeOwner = bikeLatLng.get(i);
             bikeCode = bikeLatLng.get(i + 1);
-            bikeLatitude = Float.parseFloat(bikeLatLng.get(i + 2));
-            bikeLongitude = Float.parseFloat(bikeLatLng.get(i + 3));
+            bikeLatitude = Double.parseDouble(bikeLatLng.get(i + 2));
+            bikeLongitude = Double.parseDouble(bikeLatLng.get(i + 3));
             bikeCost = Integer.parseInt(bikeLatLng.get(i + 4));
             bikeImgUrl = bikeLatLng.get(i + 5);
             bikeLockId = bikeLatLng.get(i + 6);
@@ -194,9 +194,9 @@ public class Main2Activity extends AppCompatActivity
             simpleAddMarker(map, markerOptions, bikeLocation, bikeOwner, "자전거 종류: " + bikeType);
         }
 
-        LatLng SEOUL = new LatLng(37.56, 126.97);;
+        LatLng SEOUL = new LatLng(37.506, 126.958);
         map.moveCamera(CameraUpdateFactory.newLatLng(SEOUL));
-        map.animateCamera(CameraUpdateFactory.zoomTo(10));
+        map.animateCamera(CameraUpdateFactory.zoomTo(13));
 
         mMap.setOnMarkerClickListener(this);
     }
@@ -211,9 +211,8 @@ public class Main2Activity extends AppCompatActivity
     @Override
     public boolean onMarkerClick(Marker marker) {
         String mOwner = marker.getTitle();
-
         for (int i = 0; i < bikeList.size(); ++i){
-            if (bikeList.get(i).getBikeOwner() == mOwner && marker.getPosition().latitude == bikeList.get(i).getBikeLatitude()){
+            if ((bikeList.get(i).getBikeOwner().equals(mOwner)) && (marker.getPosition().latitude == bikeList.get(i).getBikeLatitude())){
                 if (markerClickFlag == i){
                     Intent intent = new Intent(Main2Activity.this, RentActivity.class);
                     intent.putExtra("borrower", userID);
@@ -222,6 +221,7 @@ public class Main2Activity extends AppCompatActivity
                 }else{
                     markerClickFlag = i;
                 }
+                break;
             }
         }
         return false;
