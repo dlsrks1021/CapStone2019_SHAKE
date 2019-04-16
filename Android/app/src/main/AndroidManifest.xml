@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.user.shake">
-
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
@@ -29,6 +28,8 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+        <activity android:name=".RegisterBikeLocationActivity"></activity>
+        <activity android:name=".BikeRegisterActivity" />
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -51,6 +52,7 @@
         <activity android:name=".RentActivity" />
         <activity android:name=".InfoActivity" />
         <activity android:name=".CameraActivity"></activity>
+        <activity android:name=".RentActivity" />
     </application>
 
 </manifest>
