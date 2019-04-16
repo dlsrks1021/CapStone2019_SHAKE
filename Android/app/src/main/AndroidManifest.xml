@@ -35,7 +35,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
         <activity android:name=".RegisterBikeLocationActivity"></activity>
 
         <activity android:name=".BikeRegisterActivity" />
@@ -57,9 +56,11 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity" />
+        <activity android:name=".MapActivity" />
         <activity android:name=".RentActivity" />
         <activity android:name=".InfoActivity" />
         <activity android:name=".CameraActivity"></activity>
+        <activity android:name=".RentActivity" />
     </application>
 
 </manifest>

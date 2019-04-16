@@ -20,4 +20,14 @@ public class BikeInfo {
         this.bikeType = bikeType;
         this.bikeAddInfo = bikeAddInfo;
     }
+
+    public String getBikeOwner() {
+        return bikeOwner;
+    }
+    public double getBikeLatitude(){
+        return bikeLatitude;
+    }
+    public String getBikeCode(){
+        return bikeCode;
+    }
 }
