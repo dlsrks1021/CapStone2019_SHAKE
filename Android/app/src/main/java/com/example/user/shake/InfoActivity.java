@@ -63,7 +63,20 @@ public class InfoActivity extends AppCompatActivity {
         TextView title = (TextView)findViewById(R.id.title_info);
         final TextView content = (TextView)findViewById(R.id.content_info);
         Button return_button = (Button) findViewById(R.id.return_button_info);
-
+//
+        try {
+            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            String provider = location.getProvider();
+            double longitude = location.getLongitude();
+            double latitude = location.getLatitude();
+            double altitude = location.getAltitude();
+            System.out.println("위치정보 : " + provider + "\n" + "위도 : " + longitude + "\n" + "경도 : " + latitude + "\n" + "고도  : " + altitude);
+        }
+        catch (SecurityException e){
+            System.out.println("FUCK");
+            e.printStackTrace();
+        }
+//
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -100,18 +113,6 @@ public class InfoActivity extends AppCompatActivity {
                             boolean success = jsonResponse.getBoolean("rent_success");
                             if(success){
                                 content.setText("대여 중인 자전거가 없습니다");
-                                try {
-                                    Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                                    String provider = location.getProvider();
-                                    double longitude = location.getLongitude();
-                                    double latitude = location.getLatitude();
-                                    double altitude = location.getAltitude();
-                                    System.out.println("위치정보 : " + provider + "\n" + "위도 : " + longitude + "\n" + "경도 : " + latitude + "\n" + "고도  : " + altitude);
-                                }
-                                catch (SecurityException e){
-                                    System.out.println("FUCK");
-                                    e.printStackTrace();
-                                }
                             }
                             else{
                                 AlertDialog.Builder builder = new AlertDialog.Builder(InfoActivity.this);
