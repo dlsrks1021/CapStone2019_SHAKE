@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 
+import android.icu.text.IDNA;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -51,19 +52,19 @@ public class MainActivity extends AppCompatActivity
         //Save User Information
         Intent intent = getIntent();
         userID = intent.getStringExtra("userID");
-        Toast.makeText(getApplicationContext(),userName,Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(),userName,Toast.LENGTH_SHORT).show();
         mContext=this;
 
         // Navigation Bar implementation
         Toast.makeText(getApplicationContext(),"화면을 스와이프하시면 메뉴가 보입니다.",Toast.LENGTH_SHORT).show();
-
 
         FragmentManager fragmentManager = getFragmentManager();
         MapFragment mapFragment = (MapFragment)fragmentManager
                 .findFragmentById(R.id.mapMain);
         mapFragment.getMapAsync(this);
         
-        final String[] items = {userID+"님","Rent", "자전거등록", "항목3", "항목4"} ;
+
+        final String[] items = {userID+"님","대여", "지도", "내 정보", "항목4"} ;
 
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, items) ;
 
@@ -78,8 +79,8 @@ public class MainActivity extends AppCompatActivity
                         Toast.makeText(getApplicationContext(),"Welcome!",Toast.LENGTH_SHORT).show();
                         break ;
                     case 1 : //List2
-                        Intent intent = new Intent(MainActivity.this, RentActivity.class);
-                        MainActivity.this.startActivity(intent);
+                        Intent intent_rent = new Intent(MainActivity.this, RentActivity.class);
+                        MainActivity.this.startActivity(intent_rent);
                         break ;
                     case 2 : //List3
                         Intent intent2 = new Intent(MainActivity.this, BikeRegisterActivity.class);
@@ -87,10 +88,12 @@ public class MainActivity extends AppCompatActivity
                         MainActivity.this.startActivity(intent2);
                         break ;
                     case 3 : //List4
-                        Toast.makeText(getApplicationContext(),"List4 Clicked",Toast.LENGTH_SHORT).show();
+                        Intent intent_info = new Intent(MainActivity.this, InfoActivity.class);
+                        MainActivity.this.startActivity(intent_info);
                         break ;
                     case 4 : //List5
-                        Toast.makeText(getApplicationContext(),"List5 Clicked",Toast.LENGTH_SHORT).show();
+                        Intent intent_cam = new Intent(MainActivity.this, CameraActivity.class);
+                        MainActivity.this.startActivity(intent_cam);
                         break ;
                 }
 

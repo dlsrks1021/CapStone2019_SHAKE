@@ -8,6 +8,9 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -16,13 +19,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".Main2Activity"
             android:label="@string/title_activity_main2"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".RegisterBikeLocationActivity" />
-        <activity android:name=".BikeRegisterActivity" />
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.shuvic.alumni.cameraalbum"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+        <activity android:name=".RegisterBikeLocationActivity"></activity>
+
+        <activity android:name=".BikeRegisterActivity" />
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -41,6 +56,10 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity" />
+        <activity android:name=".MapActivity" />
+        <activity android:name=".RentActivity" />
+        <activity android:name=".InfoActivity" />
+        <activity android:name=".CameraActivity"></activity>
         <activity android:name=".RentActivity" />
     </application>
 
