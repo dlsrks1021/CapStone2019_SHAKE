@@ -108,11 +108,11 @@ public class MainActivity extends AppCompatActivity
 
         FragmentManager fragmentManager = getFragmentManager();
         MapFragment mapFragment = (MapFragment)fragmentManager
-                .findFragmentById(R.id.map);
+                .findFragmentById(R.id.mapMain);
         mapFragment.getMapAsync(this);
         
-        final String[] items = {userID+"님","대여", "지도", "내 정보", "항목4"} ;
 
+        final String[] items = {userID+"님","대여", "지도", "내 정보", "항목4"} ;
 
 
 
@@ -135,6 +135,9 @@ public class MainActivity extends AppCompatActivity
                     case 2 : //List3
                         //Intent intent_map = new Intent(MainActivity.this, MapActivity.class);
                         //MainActivity.this.startActivity(intent_map);
+                        Intent intent2 = new Intent(MainActivity.this, BikeRegisterActivity.class);
+                        intent2.putExtra("userId", userID);
+                        MainActivity.this.startActivity(intent2);
                         break ;
                     case 3 : //List4
                         Intent intent_info = new Intent(MainActivity.this, InfoActivity.class);
@@ -204,9 +207,9 @@ public class MainActivity extends AppCompatActivity
         ArrayList<BikeInfo> bikeList = new ArrayList<>();
         MarkerOptions markerOptions = new MarkerOptions();
         int bikeCost = 0;
-        float bikeLatitude = 0, bikeLongitude = 0;
+        double bikeLatitude = 0, bikeLongitude = 0;
         String bikeOwner = "", bikeType = "", bikeImgUrl = "", bikeCode = "";
-        String bikeLockId = "", bikeModelName = "";
+        String bikeLockId = "", bikeModelName = "", bikeAddInfo = "";
 
         try {
             bikeLatLng = task.execute("http://13.125.229.179/getBikeInfo.php").get();
@@ -218,7 +221,7 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        for (int i = 0; i < bikeLatLng.size(); i += 9){
+        for (int i = 0; i < bikeLatLng.size(); i += 10){
             bikeOwner = bikeLatLng.get(i);
             bikeCode = bikeLatLng.get(i + 1);
             bikeLatitude = Float.parseFloat(bikeLatLng.get(i + 2));
@@ -228,8 +231,9 @@ public class MainActivity extends AppCompatActivity
             bikeLockId = bikeLatLng.get(i + 6);
             bikeModelName = bikeLatLng.get(i + 7);
             bikeType = bikeLatLng.get(i + 8);
+            bikeAddInfo = bikeLatLng.get(i + 9);
 
-            BikeInfo bike = new BikeInfo(bikeOwner, bikeCode, bikeLatitude, bikeLongitude, bikeCost, bikeImgUrl, bikeLockId, bikeModelName, bikeType);
+            BikeInfo bike = new BikeInfo(bikeOwner, bikeCode, bikeLatitude, bikeLongitude, bikeCost, bikeImgUrl, bikeLockId, bikeModelName, bikeType, bikeAddInfo);
             bikeList.add(bike);
             LatLng bikeLocation = new LatLng(bikeLatitude, bikeLongitude);
             simpleAddMarker(map, markerOptions, bikeLocation, "공유자: " + bikeOwner, "자전거 종류: " + bikeType);
