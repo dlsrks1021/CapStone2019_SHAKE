@@ -156,14 +156,14 @@ public class InfoActivity extends AppCompatActivity {
                     gps.showSettingsAlert();
                 }
                 if(!content.getText().equals("대여 중인 자전거가 없습니다")) {
-                    if(//if문으로 위치 받아서 반납장소랑 현재 위치랑 비슷한지 비교해서 맞으면 실행){
+                    /*if(if문으로 위치 받아서 반납장소랑 현재 위치랑 비슷한지 비교해서 맞으면 실행){
                         long time = System.currentTimeMillis();
                         SimpleDateFormat dayTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                         String day = dayTime.format(new Date(time));
                         ReturnRequest returnRequest = new ReturnRequest(getIntent().getStringExtra("userId"), Integer.parseInt(rentnumber),day, "http://13.125.229.179/testimage.php", 123, responseListener);
                         RequestQueue queue = Volley.newRequestQueue(InfoActivity.this);
                         queue.add(returnRequest);
-                    }
+                    }*/
                 }
                 else{
                     Toast.makeText(getApplicationContext(),"대여 중인 자전거가 없습니다",Toast.LENGTH_SHORT).show();
