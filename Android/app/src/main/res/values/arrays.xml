@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="bikeTypeArray">
-        <item>로드자전거</item>
+        <item>roadbike</item>
         <item>전기자전거</item>
         <item>산악자전거</item>
         <item>하이브리드자전거</item>
