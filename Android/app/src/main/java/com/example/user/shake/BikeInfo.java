@@ -2,13 +2,13 @@ package com.example.user.shake;
 
 public class BikeInfo {
 
-    private String bikeOwner, bikeCode, bikeImgUrl, bikeLockId, bikeModelName, bikeType;
-    private float bikeLatitude, bikeLongitude;
+    private String bikeOwner, bikeCode, bikeImgUrl, bikeLockId, bikeModelName, bikeType, bikeAddInfo;
+    private double bikeLatitude, bikeLongitude;
     private int bikeCost;
 
-    public BikeInfo(String bikeOwner, String bikeCode, float bikeLatitude
-    , float bikeLongitude, int bikeCost, String bikeImgUrl, String bikeLockId
-    , String bikeModelName, String bikeType){
+    public BikeInfo(String bikeOwner, String bikeCode, double bikeLatitude
+    , double bikeLongitude, int bikeCost, String bikeImgUrl, String bikeLockId
+    , String bikeModelName, String bikeType, String bikeAddInfo){
         this.bikeOwner = bikeOwner;
         this.bikeCode = bikeCode;
         this.bikeLatitude = bikeLatitude;
@@ -18,5 +18,6 @@ public class BikeInfo {
         this.bikeLockId = bikeLockId;
         this.bikeModelName = bikeModelName;
         this.bikeType = bikeType;
+        this.bikeAddInfo = bikeAddInfo;
     }
 }

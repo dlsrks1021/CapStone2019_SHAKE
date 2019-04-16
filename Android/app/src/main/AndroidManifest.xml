@@ -19,6 +19,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <activity
+            android:name=".Main2Activity"
+            android:label="@string/title_activity_main2"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".RegisterBikeLocationActivity" />
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.shuvic.alumni.cameraalbum"
@@ -29,6 +36,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
         <activity android:name=".RegisterBikeLocationActivity"></activity>
+
         <activity android:name=".BikeRegisterActivity" />
         <uses-library
             android:name="org.apache.http.legacy"

@@ -5,7 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-
+    <fragment
+        android:id="@+id/mapMain22"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        class="com.google.android.gms.maps.MapFragment" />
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/drawer"
         android:layout_width="0dp"
@@ -27,10 +31,6 @@
 
     </android.support.v4.widget.DrawerLayout>
 
-    <fragment
-        android:id="@+id/map"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        class="com.google.android.gms.maps.MapFragment" />
+
 
 </android.support.constraint.ConstraintLayout>
