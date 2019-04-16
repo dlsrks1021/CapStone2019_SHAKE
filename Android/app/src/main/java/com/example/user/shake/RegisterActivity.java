@@ -57,7 +57,7 @@ public class RegisterActivity extends AppCompatActivity {
                                         .setPositiveButton("확인",null)
                                         .create()
                                         .show();
-                                System.out.println(jsonResponse);
+                                //System.out.println(jsonResponse);
                                 Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                                 RegisterActivity.this.startActivity(intent);
                             }

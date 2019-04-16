@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -29,9 +30,34 @@ public class RentActivity extends AppCompatActivity {
         info=((MainActivity)MainActivity.mContext).getInfo();
 
         final Button rentbtn = (Button) findViewById(R.id.rent_button);
-        //final TextView registerbtn = (TextView) findViewById(R.id.explain);
+        final Button return_btn = (Button) findViewById(R.id.return_button);
+        final TextView explain = (TextView) findViewById(R.id.explain);
         final String bikecode = "7777";
         final String borrower = info[0];
+        final String rentnumber_send;
+
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try{
+                    JSONObject jsonResponse = new JSONObject(response);
+                    boolean success = jsonResponse.getBoolean("success");
+                    if(success){
+                        explain.setText("대여 가능");
+                    }
+                    else{
+                        explain.setText("대여 중인 \n자전거가 있습니다");
+                    }
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        };
+        CheckRequest checkRequest = new CheckRequest(borrower, responseListener);
+        RequestQueue queue = Volley.newRequestQueue(RentActivity.this);
+        queue.add(checkRequest);
+
 
         rentbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,13 +70,12 @@ public class RentActivity extends AppCompatActivity {
                             JSONObject jsonResponse = new JSONObject(response);
                             boolean success = jsonResponse.getBoolean("success");
                             if(success){
-                                System.out.println(jsonResponse);
-                                //String userID = jsonResponse.getString("userID");
-                                //String userPassword = jsonResponse.getString("userPassword");
-                                Intent intent = new Intent(RentActivity.this, RentActivity.class);
-                                //intent.putExtra("userID",userID);
-                                //intent.putExtra("userPassword",userPassword);
-                                RentActivity.this.startActivity(intent);
+                                explain.setText("대여 중인 \n자전거가 있습니다");
+                                Intent intent = new Intent(RentActivity.this, InfoActivity.class);
+                                String rentnumber = jsonResponse.getString("rentnumber");
+                                intent.putExtra("rentnumber",rentnumber);
+                                finish();
+
                             }
                             else{
                                 AlertDialog.Builder builder = new AlertDialog.Builder(RentActivity.this);
@@ -65,9 +90,14 @@ public class RentActivity extends AppCompatActivity {
                         }
                     }
                 };
-                RentRequest rentRequest = new RentRequest(bikecode, borrower,"2019-04-03 12:00:01","2019-04-03 15:00:01",0,0, responseListener);
-                RequestQueue queue = Volley.newRequestQueue(RentActivity.this);
-                queue.add(rentRequest);
+                if(!explain.getText().equals("대여 중인 \n자전거가 있습니다")) {
+                    RentRequest rentRequest = new RentRequest(bikecode, borrower, "2019-04-03 12:00:01", "2019-04-03 15:00:01", 0, 0, responseListener);
+                    RequestQueue queue = Volley.newRequestQueue(RentActivity.this);
+                    queue.add(rentRequest);
+                }
+                else{
+                    Toast.makeText(getApplicationContext(),"대여 중인 자전거가 있습니다",Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

@@ -16,17 +16,6 @@ public class StartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-
-        Button mapBtn = (Button)findViewById(R.id.mapBtn);
-        mapBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(StartActivity.this, MapActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
         Handler hd = new Handler();
         hd.postDelayed(new splashhandler(),1000);
     }
