@@ -56,6 +56,7 @@ public class Main2Activity extends AppCompatActivity
         //Save User Information
         Intent intent = getIntent();
         userID = intent.getStringExtra("userID");
+
         //Toast.makeText(getApplicationContext(),userName,Toast.LENGTH_SHORT).show();
         mContext=this;
 
@@ -65,6 +66,7 @@ public class Main2Activity extends AppCompatActivity
 
 
         //navTitle.setText(userID);
+        Toast.makeText(getApplicationContext(),"화면을 스와이프하시면 메뉴가 보입니다.",Toast.LENGTH_SHORT).show();
 
         FragmentManager fragmentManager = getFragmentManager();
         MapFragment mapFragment = (MapFragment)fragmentManager
@@ -109,6 +111,8 @@ public class Main2Activity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main2, menu);
+        TextView main_title = (TextView)findViewById(R.id.textNavTitle);
+        main_title.setText(userID+" 님");
         return true;
     }
 
@@ -133,6 +137,7 @@ public class Main2Activity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+
         if (id == R.id.itemRent) {
             Intent intent = new Intent(Main2Activity.this, RentActivity.class);
             Main2Activity.this.startActivity(intent);
@@ -143,6 +148,11 @@ public class Main2Activity extends AppCompatActivity
         }
         else if (id == R.id.itemInfo) {
             Intent intent2 = new Intent(Main2Activity.this, InfoActivity.class);
+            intent2.putExtra("userId", userID);
+            Main2Activity.this.startActivity(intent2);
+        }
+        else if (id == R.id.itemcamera) {
+            Intent intent2 = new Intent(Main2Activity.this, CameraActivity.class);
             intent2.putExtra("userId", userID);
             Main2Activity.this.startActivity(intent2);
         }
