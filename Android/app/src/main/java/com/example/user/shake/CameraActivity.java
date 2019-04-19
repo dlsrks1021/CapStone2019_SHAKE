@@ -1,18 +1,15 @@
 package com.example.user.shake;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.icu.text.SimpleDateFormat;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+import android.graphics.Camera;
 import android.net.Uri;
-import android.Manifest;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -21,33 +18,19 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
-
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.Toast;
-import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class CameraActivity extends AppCompatActivity {
 
-    private ImageView img1, img2, img3, img4;
-    private Uri imgUri, photoURI, albumURI;
-    private String mCurrentPhotoPath;
-
-    private static final int FROM_CAMERA = 0;
-    private static final int FROM_ALBUM = 1;
     private static final int MY_PERMISSION_CAMERA = 1111;
     private static final int REQUEST_TAKE_PHOTO = 2222;
     private static final int REQUEST_TAKE_ALBUM = 3333;
@@ -55,153 +38,75 @@ public class CameraActivity extends AppCompatActivity {
 
     Button btn_capture, btn_album;
     ImageView iv_view;
+
+    String mCurrentPhotoPath;
+    PermissionCheck permission;
+
     Uri imageUri;
+    Uri photoURI, albumURI;
+    Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
 
-        //TedPermission 라이브러리 -> 카메라 권한 획득
-        PermissionListener permissionlistener = new PermissionListener() {
+        permission = new PermissionCheck(CameraActivity.this);
+
+        mContext=this;
+        btn_capture = (Button) findViewById(R.id.btn_capture);
+        btn_album = (Button) findViewById(R.id.btn_album);
+        iv_view = (ImageView) findViewById(R.id.iv_view);
+
+        btn_capture.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onPermissionGranted() {
-                Toast.makeText(CameraActivity.this, "Permission Granted", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-                Toast.makeText(CameraActivity.this, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
-            }
-        };
-
-        TedPermission.with(this)
-                .setPermissionListener(permissionlistener)
-                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
-                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
-                .check();
-
-        img1 = findViewById(R.id.img1);
-
-        //앨범선택, 사진촬영, 취소 다이얼로그 생성
-        img1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                makeDialog();
+            public void onClick(View v) {
+                captureCamera();
             }
         });
 
-        /*String[] str = getResources().getStringArray(R.array.spinnerArray_forWrite_money);
-        final ArrayAdapter<String> adapter= new ArrayAdapter<String>(WriteClassActivity.this,R.layout.spinner_item,str);
-        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        spinner_money_min.setAdapter(adapter);
-        spinner_money_max.setAdapter(adapter);*/
-    }
-
-    private void makeDialog() {
-        AlertDialog.Builder alt_bld = new AlertDialog.Builder(CameraActivity.this);
-        alt_bld.setTitle("사진 업로드").setIcon(R.drawable.login_icon).setCancelable(
-                false).setPositiveButton("사진촬영",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // 사진 촬영 클릭
-                        Log.v("알림", "다이얼로그 > 사진촬영 선택");
-                        camera_run();
-                        gps_check();
-                    }
-                })/*.setNeutralButton("앨범선택",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialogInterface, int id) {
-                        Log.v("알림", "다이얼로그 > 앨범선택 선택");
-                        //앨범에서 선택
-                        selectAlbum();
-                    }
-                })*/.setNegativeButton("취소   ",
-
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Log.v("알림", "다이얼로그 > 취소 선택");
-                        // 취소 클릭. dialog 닫기.
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert = alt_bld.create();
-        alert.show();
-    }
-
-    private void camera_run(){
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        startActivityForResult( takePictureIntent, 1);
-    }
-
-    private void gps_check(){
-        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Location location = null;
-        try{
-            if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-                location=lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        btn_album.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getAlbum();
             }
-            else if(lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
-                location=lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            }
-        }
-        catch(SecurityException e) {
-            e.printStackTrace();
-        }
+        });
+
+        checkPermission();
     }
 
-    final LocationListener gpsLocationListener = new LocationListener() {
-        public void onLocationChanged(Location location) {
+    public void captureCamera(){
+        if(permission.isCheck("Camera")) {
 
-            String provider = location.getProvider();
-            double longitude = location.getLongitude();
-            double latitude = location.getLatitude();
-            double altitude = location.getAltitude();
+            String state = Environment.getExternalStorageState();
+            if(Environment.MEDIA_MOUNTED.equals(state)){
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    File photoFile = null;
+                    try {
+                        photoFile = createImageFile();
+                    } catch (IOException ex) {
+                        // Error occurred while creating the File
+                    }
+                    if (photoFile != null) {
+                        // getUriForFile의 두 번째 인자는 Manifest provier의 authorites와 일치해야 함
+                        // phptoURI : file://로 시작, FileProvider(Content Provider 하위)는 content://로 시작
+                        // 누가(7.0)이상부터는 file://로 시작되는 Uri의 값을 다른 앱과 주고 받기(Content Provider)가 불가능
+                        photoURI = FileProvider.getUriForFile(this, "com.shuvic.alumni.cameraalbum", photoFile);
 
-            //txtResult.setText("위치정보 : " + provider + "\n" +"위도 : " + longitude + "\n" +"경도 : " + latitude + "\n" +"고도  : " + altitude);
+                        Log.i("photoFile", photoFile.toString());
+                        Log.i("photoURI", photoURI.toString());
 
-        }
-
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
-
-        public void onProviderEnabled(String provider) {
-        }
-
-        public void onProviderDisabled(String provider) {
-        }
-    };
-    //사진 찍기 클릭
-
-    private void captureCamera() {
-        String state = Environment.getExternalStorageState();
-        // 외장 메모리 검사
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                File photoFile = null;
-                try {
-                    photoFile = createImageFile();
-                } catch (IOException ex) {
-                    Log.e("captureCamera Error", ex.toString());
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI );
+                        startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                    }
                 }
-                if (photoFile != null) {
-                    // getUriForFile의 두 번째 인자는 Manifest provier의 authorites와 일치해야 함
-
-                    Uri providerURI = FileProvider.getUriForFile(this, getPackageName(), photoFile);
-                    imageUri = providerURI;
-
-                    // 인텐트에 전달할 때는 FileProvier의 Return값인 content://로만!!, providerURI의 값에 카메라 데이터를 넣어 보냄
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, providerURI);
-
-                    startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-                }
+            } else {
+                Toast.makeText(CameraActivity.this, "외장 메모리 미 지원", Toast.LENGTH_SHORT).show();
+                return;
             }
         } else {
-            Toast.makeText(this, "저장공간이 접근 불가능한 기기입니다", Toast.LENGTH_SHORT).show();
-            return;
+            Toast.makeText(CameraActivity.this, "저장소 권한 설정에 문제가 발생했습니다.", Toast.LENGTH_SHORT);
         }
     }
 
@@ -211,10 +116,12 @@ public class CameraActivity extends AppCompatActivity {
         String imageFileName = "JPEG_" + timeStamp + ".jpg";
         File imageFile = null;
         File storageDir = new File(Environment.getExternalStorageDirectory() + "/Pictures", "gyeom");
+
         if (!storageDir.exists()) {
             Log.i("mCurrentPhotoPath1", storageDir.toString());
             storageDir.mkdirs();
         }
+
         imageFile = new File(storageDir, imageFileName);
         mCurrentPhotoPath = imageFile.getAbsolutePath();
 
@@ -222,7 +129,7 @@ public class CameraActivity extends AppCompatActivity {
     }
 
 
-    private void getAlbum() {
+    private void getAlbum(){
         Log.i("getAlbum", "Call");
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
@@ -230,7 +137,7 @@ public class CameraActivity extends AppCompatActivity {
         startActivityForResult(intent, REQUEST_TAKE_ALBUM);
     }
 
-    private void galleryAddPic() {
+    private void galleryAddPic(){
         Log.i("galleryAddPic", "Call");
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         // 해당 경로에 있는 파일을 객체화(새로 파일을 만든다는 것으로 이해하면 안 됨)
@@ -239,6 +146,26 @@ public class CameraActivity extends AppCompatActivity {
         mediaScanIntent.setData(contentUri);
         sendBroadcast(mediaScanIntent);
         Toast.makeText(this, "사진이 앨범에 저장되었습니다.", Toast.LENGTH_SHORT).show();
+    }
+
+    // 카메라 전용 크랍
+    public void cropImage(){
+        Log.i("cropImage", "Call");
+        Log.i("cropImage", "photoURI : " + photoURI + " / albumURI : " + albumURI);
+
+        Intent cropIntent = new Intent("com.android.camera.action.CROP");
+
+        // 50x50픽셀미만은 편집할 수 없다는 문구 처리 + 갤러리, 포토 둘다 호환하는 방법
+        cropIntent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        cropIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        cropIntent.setDataAndType(photoURI, "image/*");
+        //cropIntent.putExtra("outputX", 200); // crop한 이미지의 x축 크기, 결과물의 크기
+        //cropIntent.putExtra("outputY", 200); // crop한 이미지의 y축 크기
+        cropIntent.putExtra("aspectX", 1); // crop 박스의 x축 비율, 1&1이면 정사각형
+        cropIntent.putExtra("aspectY", 1); // crop 박스의 y축 비율
+        cropIntent.putExtra("scale", true);
+        cropIntent.putExtra("output", albumURI); // 크랍된 이미지를 해당 경로에 저장
+        startActivityForResult(cropIntent, REQUEST_IMAGE_CROP);
     }
 
     @Override
@@ -262,19 +189,58 @@ public class CameraActivity extends AppCompatActivity {
             case REQUEST_TAKE_ALBUM:
                 if (resultCode == Activity.RESULT_OK) {
 
-                    if (data.getData() != null) {
+                    if(data.getData() != null){
                         try {
                             File albumFile = null;
                             albumFile = createImageFile();
                             photoURI = data.getData();
                             albumURI = Uri.fromFile(albumFile);
-                            //cropImage();
-                        } catch (Exception e) {
+                            cropImage();
+                        }catch (Exception e){
                             Log.e("TAKE_ALBUM_SINGLE ERROR", e.toString());
                         }
                     }
                 }
                 break;
+
+            case REQUEST_IMAGE_CROP:
+                if (resultCode == Activity.RESULT_OK) {
+
+                    galleryAddPic();
+                    iv_view.setImageURI(albumURI);
+                }
+                break;
+        }
+    }
+
+    private void checkPermission(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // 처음 호출시엔 if()안의 부분은 false로 리턴 됨 -> else{..}의 요청으로 넘어감
+            if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) ||
+                    (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA))) {
+                new AlertDialog.Builder(this)
+                        .setTitle("알림")
+                        .setMessage("저장소 권한이 거부되었습니다. 사용을 원하시면 설정에서 해당 권한을 직접 허용하셔야 합니다.")
+                        .setNeutralButton("설정", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                intent.setData(Uri.parse("package:" + getPackageName()));
+                                startActivity(intent);
+                            }
+                        })
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                finish();
+                            }
+                        })
+                        .setCancelable(false)
+                        .create()
+                        .show();
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, MY_PERMISSION_CAMERA);
+            }
         }
     }
 
@@ -290,6 +256,7 @@ public class CameraActivity extends AppCompatActivity {
                     }
                 }
                 // 허용했다면 이 부분에서..
+
                 break;
         }
     }
