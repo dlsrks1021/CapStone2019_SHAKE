@@ -3,6 +3,7 @@ package com.example.user.shake;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,8 +25,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -41,10 +47,17 @@ public class CameraActivity extends AppCompatActivity {
 
     String mCurrentPhotoPath;
     PermissionCheck permission;
+    //UploadFile uploadFile;
 
     Uri imageUri;
     Uri photoURI, albumURI;
     Context mContext;
+    ProgressDialog dialog = null;
+    String upLoadServerUri = "http://13.125.229.179/UploadToServer.php";
+    String uploadFilePath,uploadFileName;
+    int serverResponseCode = 0;
+
+    int captureCount=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,11 +67,11 @@ public class CameraActivity extends AppCompatActivity {
         permission = new PermissionCheck(CameraActivity.this);
 
         mContext=this;
-        btn_capture = (Button) findViewById(R.id.btn_capture);
-        btn_album = (Button) findViewById(R.id.btn_album);
-        iv_view = (ImageView) findViewById(R.id.iv_view);
+        //btn_capture = (Button) findViewById(R.id.btn_capture);
+        //btn_album = (Button) findViewById(R.id.btn_album);
+        //iv_view = (ImageView) findViewById(R.id.iv_view);
 
-        btn_capture.setOnClickListener(new View.OnClickListener() {
+        /*btn_capture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 captureCamera();
@@ -70,9 +83,21 @@ public class CameraActivity extends AppCompatActivity {
             public void onClick(View v) {
                 getAlbum();
             }
-        });
+        });*/
 
         checkPermission();
+        //캡처 시작
+        if(captureCount==0) {
+            captureCamera();
+        }
+        else if(captureCount<10){
+            android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(CameraActivity.this);
+            builder.setMessage("최대 10장까지 촬영이 가능합니다.\n계속 촬영하실건가요?")
+                    .setPositiveButton("Yes",null)
+                    .setNegativeButton("No",null)
+                    .create()
+                    .show();
+        }
     }
 
     public void captureCamera(){
@@ -128,7 +153,6 @@ public class CameraActivity extends AppCompatActivity {
         return imageFile;
     }
 
-
     private void getAlbum(){
         Log.i("getAlbum", "Call");
         Intent intent = new Intent(Intent.ACTION_PICK);
@@ -174,11 +198,30 @@ public class CameraActivity extends AppCompatActivity {
             case REQUEST_TAKE_PHOTO:
                 if (resultCode == Activity.RESULT_OK) {
                     try {
+
                         Log.i("REQUEST_TAKE_PHOTO", "OK");
                         galleryAddPic();
+                        System.out.println("TEST POINT");
 
-                        iv_view.setImageURI(imageUri);
+                        // iv_view.setImageURI(imageUri);
+                        //Test
+                        uploadFilePath=mCurrentPhotoPath.substring(0,35);
+                        uploadFileName=mCurrentPhotoPath.substring(35);
+                        System.out.println(uploadFilePath+" // "+uploadFileName);
+                        dialog = ProgressDialog.show(CameraActivity.this, "", "Uploading file...", true);
+
+                        new Thread(new Runnable() {
+                            public void run() {
+                                runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        //messageText.setText("uploading started.....");
+                                    }
+                                });
+                                uploadFile(uploadFilePath+""+uploadFileName);
+                            }
+                        }).start();
                     } catch (Exception e) {
+                        System.out.println(mCurrentPhotoPath);
                         Log.e("REQUEST_TAKE_PHOTO", e.toString());
                     }
                 } else {
@@ -211,6 +254,152 @@ public class CameraActivity extends AppCompatActivity {
                 }
                 break;
         }
+    }
+
+    public int uploadFile(String sourceFileUri) {
+
+        String fileName = sourceFileUri;
+        HttpURLConnection conn = null;
+        DataOutputStream dos = null;
+        String lineEnd = "\r\n";
+        String twoHyphens = "--";
+        String boundary = "*****";
+
+        int bytesRead, bytesAvailable, bufferSize;
+        byte[] buffer;
+        int maxBufferSize = 1 * 10000 * 10000;
+        File sourceFile = new File(sourceFileUri);
+        if (!sourceFile.isFile()) {
+            dialog.dismiss();
+            Log.e("uploadFile", "Source File not exist :" +mCurrentPhotoPath);
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    //messageText.setText("Source File not exist :"+uploadFilePath + "" + uploadFileName);
+                }
+            });
+            return 0;
+        }
+        else
+        {
+            try {
+                // open a URL connection to the Servlet
+
+                FileInputStream fileInputStream = new FileInputStream(sourceFile);
+
+                URL url = new URL(upLoadServerUri);
+
+                // Open a HTTP  connection to  the URL
+                conn = (HttpURLConnection) url.openConnection();
+
+                conn.setDoInput(true); // Allow Inputs
+
+                conn.setDoOutput(true); // Allow Outputs
+
+                conn.setUseCaches(false); // Don't use a Cached Copy
+
+                conn.setRequestMethod("POST");
+
+                conn.setRequestProperty("Connection", "Keep-Alive");
+
+                conn.setRequestProperty("ENCTYPE", "multipart/form-data");
+
+                conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+
+                conn.setRequestProperty("uploaded_file", fileName);
+
+
+
+                dos = new DataOutputStream(conn.getOutputStream());
+
+
+
+                dos.writeBytes(twoHyphens + boundary + lineEnd);
+
+                dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""+ fileName + "\"" + lineEnd);
+
+
+
+                dos.writeBytes(lineEnd);
+
+
+
+                // create a buffer of  maximum size
+
+                bytesAvailable = fileInputStream.available();
+
+
+
+                bufferSize = Math.min(bytesAvailable, maxBufferSize);
+
+                buffer = new byte[bufferSize];
+
+
+                // read file and write it into form...
+                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+
+
+                while (bytesRead > 0) {
+                    dos.write(buffer, 0, bufferSize);
+
+                    bytesAvailable = fileInputStream.available();
+
+                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
+
+                    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+                }
+                // send multipart form data necesssary after file data...
+                dos.writeBytes(lineEnd);
+                dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+                // Responses from the server (code and message)
+                serverResponseCode = conn.getResponseCode();
+                String serverResponseMessage = conn.getResponseMessage();
+
+                Log.i("uploadFile", "HTTP Response is : "
+                        + serverResponseMessage + ": " + serverResponseCode);
+                if(serverResponseCode == 200){
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            //String msg = "File Upload Completed.\n\n See uploaded file here : \n\n" +uploadFileName;
+                            //messageText.setText(msg);
+                            Toast.makeText(CameraActivity.this, "File Upload Complete.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+                //close the streams //
+                fileInputStream.close();
+                dos.flush();
+                dos.close();
+
+            } catch (MalformedURLException ex) {
+                dialog.dismiss();
+                ex.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        //messageText.setText("MalformedURLException Exception : check script url.");
+                        Toast.makeText(CameraActivity.this, "MalformedURLException",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+                Log.e("Upload file to server", "error: " + ex.getMessage(), ex);
+            } catch (Exception e) {
+                dialog.dismiss();
+                e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        //messageText.setText("Got Exception : see logcat ");
+                        Toast.makeText(CameraActivity.this, "Got Exception : see logcat ",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+                Log.e("Upload file to server Exception", "Exception : "
+                        + e.getMessage(), e);
+            }
+            dialog.dismiss();
+            return serverResponseCode;
+        } // End else block
     }
 
     private void checkPermission(){
@@ -260,4 +449,15 @@ public class CameraActivity extends AppCompatActivity {
                 break;
         }
     }
+
+    /*public void uploadFile(String filePath){
+        String url = "13.125.229.179/upload.php";
+        try {
+            UploadFile uploadFile = new UploadFile(CameraActivity.this);
+            uploadFile.setPath(filePath);
+            uploadFile.execute(url);
+        } catch (Exception e){
+            //sendLogMsgPHP(e.toString());
+        }
+    }*/
 }

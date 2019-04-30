@@ -69,9 +69,11 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 };
-                LoginRequest loginRequest = new LoginRequest(userID, userPassword, responseListener);
+                startActivity(new Intent(getApplication(),Main2Activity.class));
+
+                /*LoginRequest loginRequest = new LoginRequest(userID, userPassword, responseListener);
                 RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
-                queue.add(loginRequest);
+                queue.add(loginRequest);*/
             }
         });
     }
