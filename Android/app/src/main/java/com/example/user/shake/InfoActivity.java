@@ -32,10 +32,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 public class InfoActivity extends AppCompatActivity {
 
     private String rentnumber;
+    String userId;
     TextView idView;
     TextView emailView;
     TextView pointView;
@@ -56,7 +58,7 @@ public class InfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_info);
 
         Intent intent = getIntent();
-
+        userId = intent.getStringExtra("userId");
         String[] info = new String[2];
         info=((Main2Activity)Main2Activity.mContext).getInfo();
         final String borrower = info[0];
@@ -68,6 +70,18 @@ public class InfoActivity extends AppCompatActivity {
 
         idView.setText(intent.getStringExtra("userId"));
         pointView.setText("p");
+
+        PhpConnect task = new PhpConnect();
+        ArrayList<String> userEmail;
+
+        try {
+            userEmail = task.execute("http://13.125.229.179/getEmailInfo.php?userId="+userId).get();
+            emailView.setText(userEmail.get(0));
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }catch (ExecutionException e) {
+            e.printStackTrace();
+        }
 
         PermissionListener permissionlistener = new PermissionListener() {
             @Override
