@@ -1,4 +1,4 @@
-package com.example.user.shake;
+package com.example.user.shake.Request;
 
 import android.Manifest;
 import android.app.Activity;

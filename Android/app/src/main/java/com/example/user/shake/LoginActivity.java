@@ -69,11 +69,11 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 };
-                startActivity(new Intent(getApplication(),Main2Activity.class));
+                //startActivity(new Intent(getApplication(),Main2Activity.class)); //Test용도 ( 로그인 누르면 바로 메인으로 이동 )
 
-                /*LoginRequest loginRequest = new LoginRequest(userID, userPassword, responseListener);
+                LoginRequest loginRequest = new LoginRequest(userID, userPassword, responseListener);
                 RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
-                queue.add(loginRequest);*/
+                queue.add(loginRequest);/**/ //실제 로그인 구현파트
             }
         });
     }

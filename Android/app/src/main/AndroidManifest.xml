@@ -26,6 +26,7 @@
         android:usesCleartextTraffic="true">
         <activity android:name=".BluetoothActivity"></activity>
         <activity android:name=".CameraTestActivity" />
+        <activity android:name=".Bluetooth.DeviceList"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -70,7 +71,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
+        <activity android:name=".deprecate.MainActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".RentActivity" />

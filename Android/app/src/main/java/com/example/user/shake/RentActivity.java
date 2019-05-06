@@ -7,20 +7,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
+import com.example.user.shake.Request.RentRequest;
 
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Map;
 
 public class RentActivity extends AppCompatActivity {
 

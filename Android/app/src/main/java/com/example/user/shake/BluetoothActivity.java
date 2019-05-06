@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -19,17 +18,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import app.akexorcist.bluetotohspp.library.BluetoothSPP;
-import app.akexorcist.bluetotohspp.library.BluetoothState;
-import app.akexorcist.bluetotohspp.library.DeviceList;
+import com.example.user.shake.Bluetooth.BluetoothSPP;
+import com.example.user.shake.Bluetooth.BluetoothState;
+import com.example.user.shake.Bluetooth.DeviceList;
+import com.example.user.shake.Request.PermissionCheck;
 
 public class BluetoothActivity extends AppCompatActivity {
 
     private BluetoothSPP bt;
     PermissionCheck permission;
-    private static final int MY_PERMISSION_CAMERA = 1111;
-    private static final int REQUEST_TAKE_PHOTO = 2222;
-    private static final int REQUEST_TAKE_ALBUM = 3333;
     private static final int MY_PERMISSION_BLUETOOTH = 6666;
     int count_flag=0;
     Button btnSend,btnConnect;
@@ -53,7 +50,7 @@ public class BluetoothActivity extends AppCompatActivity {
             finish();
         }
 
-        bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() { //데이터 수신
+        /*bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() { //데이터 수신
             public void onDataReceived(byte[] data, String message) {
                 Toast.makeText(BluetoothActivity.this, message, Toast.LENGTH_SHORT).show();
             }
@@ -75,7 +72,7 @@ public class BluetoothActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext()
                         , "Unable to connect", Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
 
         btnConnect.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -121,7 +118,7 @@ public class BluetoothActivity extends AppCompatActivity {
                 System.out.println(count_flag%2);
             }
         });
-    }
+    } // Send Data
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == BluetoothState.REQUEST_CONNECT_DEVICE) {
@@ -183,8 +180,6 @@ public class BluetoothActivity extends AppCompatActivity {
                         return;
                     }
                 }
-                // 허용했다면 이 부분에서..
-
                 break;
         }
     }

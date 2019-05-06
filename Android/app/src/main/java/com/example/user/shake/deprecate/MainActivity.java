@@ -1,30 +1,27 @@
-package com.example.user.shake;
+package com.example.user.shake.deprecate;
 
 import android.app.FragmentManager;
-import android.content.Context;
 import android.content.Intent;
 
-import android.icu.text.IDNA;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 
-import android.graphics.Color;
 import android.support.v4.widget.DrawerLayout;
 
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 
-import android.widget.Button;
-
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.user.shake.BikeInfo;
+import com.example.user.shake.BikeRegisterActivity;
+import com.example.user.shake.CameraActivity;
+import com.example.user.shake.InfoActivity;
+import com.example.user.shake.PhpConnect;
+import com.example.user.shake.R;
+import com.example.user.shake.RentActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;

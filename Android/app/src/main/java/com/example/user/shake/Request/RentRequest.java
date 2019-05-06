@@ -1,4 +1,4 @@
-package com.example.user.shake;
+package com.example.user.shake.Request;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
