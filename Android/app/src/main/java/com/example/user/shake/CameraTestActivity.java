@@ -73,10 +73,10 @@ public class CameraTestActivity extends AppCompatActivity {
                     }
                 }){
                     @Override
-                    protected Map<String, String> getParams() throws AuthFailureError {
+                    protected Map<String, String> getParams() {
                         Map<String,String> params = new HashMap<>();
-                        String imageDate = imageToString(bitmap);
-                        params.put("image","");
+                        String imageData = imageToString(bitmap);
+                        params.put("image",imageData);
 
                         return params;
                     }
