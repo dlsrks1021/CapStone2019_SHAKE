@@ -24,9 +24,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".BluetoothActivity"></activity>
+        <activity android:name=".SmartLockActivity"></activity>
+        <activity android:name=".BluetoothActivity" />
         <activity android:name=".CameraTestActivity" />
-        <activity android:name=".Bluetooth.DeviceList"/>
+        <activity android:name=".Bluetooth.DeviceList" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

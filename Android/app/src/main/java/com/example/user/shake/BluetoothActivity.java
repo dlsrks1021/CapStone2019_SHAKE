@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.user.shake.Bluetooth.BluetoothSPP;
@@ -29,13 +30,14 @@ public class BluetoothActivity extends AppCompatActivity {
     PermissionCheck permission;
     private static final int MY_PERMISSION_BLUETOOTH = 6666;
     int count_flag=0;
-    Button btnSend,btnConnect;
+    Button btnConnect;
+    ImageView btnSend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetooth);
-        btnSend = (Button) findViewById(R.id.btnSend);
+        btnSend = (ImageView) findViewById(R.id.btnSend);
         btnConnect = (Button) findViewById(R.id.btnConnect);
 
         permission = new PermissionCheck(BluetoothActivity.this);
@@ -109,9 +111,11 @@ public class BluetoothActivity extends AppCompatActivity {
         btnSend.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(count_flag%2==1) {
+                    btnSend.setImageResource(R.drawable.lock);
                     bt.send("1", true);//Send Data
                 }
                 else{
+                    btnSend.setImageResource(R.drawable.unlock);
                     bt.send("0", true);//Send Data
                 }
                 count_flag++;

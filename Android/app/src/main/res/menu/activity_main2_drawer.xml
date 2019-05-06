@@ -16,6 +16,9 @@
         <item
             android:id="@+id/itemcamera"
             android:title="Camera(TEST)" />
+        <item
+            android:id="@+id/itemtest"
+            android:title="TEST Activity" />
     </group>
 
 </menu>

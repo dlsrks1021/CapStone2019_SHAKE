@@ -156,6 +156,12 @@ public class Main2Activity extends AppCompatActivity
             intent2.putExtra("userId", userID);
             Main2Activity.this.startActivity(intent2);
         }
+        else if (id == R.id.itemtest) {
+            Intent intent2 = new Intent(Main2Activity.this, BluetoothActivity.class);
+            intent2.putExtra("userId", userID);
+            Main2Activity.this.startActivity(intent2);
+        }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
