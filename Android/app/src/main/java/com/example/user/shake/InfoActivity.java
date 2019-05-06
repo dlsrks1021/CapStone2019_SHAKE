@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,7 +36,9 @@ import java.util.Date;
 public class InfoActivity extends AppCompatActivity {
 
     private String rentnumber;
-
+    TextView idView;
+    TextView emailView;
+    TextView pointView;
     //Test
     private final int PERMISSIONS_ACCESS_FINE_LOCATION = 1000;
     private final int PERMISSIONS_ACCESS_COARSE_LOCATION = 1001;
@@ -52,10 +55,19 @@ public class InfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
 
+        Intent intent = getIntent();
+
         String[] info = new String[2];
         info=((Main2Activity)Main2Activity.mContext).getInfo();
         final String borrower = info[0];
         final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        idView = findViewById(R.id.infoIdView);
+        emailView = findViewById(R.id.infoEmailView);
+        pointView = findViewById(R.id.infoPointView);
+
+        idView.setText(intent.getStringExtra("userId"));
+        pointView.setText("p");
 
         PermissionListener permissionlistener = new PermissionListener() {
             @Override
@@ -90,11 +102,10 @@ public class InfoActivity extends AppCompatActivity {
                     JSONObject jsonResponse = new JSONObject(response);
                     boolean success = jsonResponse.getBoolean("success");
                     if(success){
-                        content.setText("대여 중인 자전거가 없습니다");
-
+                        content.setText("X");
                     }
                     else{
-                        content.setText("대여 중인 \n자전거가 있습니다");
+                        content.setText("O");
                         rentnumber=jsonResponse.getString("rentnumber");
                     }
                 }

@@ -23,7 +23,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        final EditText idText = (EditText) findViewById(R.id.id_edit);
+        final EditText idText = (EditText) findViewById(R.id.id_edit_register);
         final EditText passwordText = (EditText) findViewById(R.id.password_edit);
         final EditText repasswordText = (EditText) findViewById(R.id.re_password_edit);
         final EditText emailText = (EditText) findViewById(R.id.email_edit);

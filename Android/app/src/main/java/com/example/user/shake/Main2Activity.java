@@ -58,7 +58,7 @@ public class Main2Activity extends AppCompatActivity
         Intent intent = getIntent();
         userID = intent.getStringExtra("userID");
 
-        //Toast.makeText(getApplicationContext(),userName,Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(),userID,Toast.LENGTH_SHORT).show();
         mContext=this;
 
         navTitle = findViewById(R.id.textNavTitle);
