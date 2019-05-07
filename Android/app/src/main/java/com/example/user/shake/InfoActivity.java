@@ -39,7 +39,7 @@ public class InfoActivity extends AppCompatActivity {
     TextView pointView, modelNameView;
     EditText passwordEdit;
     EditText checkPasswordEdit;
-    Button modifyButton;
+    Button modifyButton, manageBikeButton;
 
     //Test
     private final int PERMISSIONS_ACCESS_FINE_LOCATION = 1000;
@@ -72,6 +72,7 @@ public class InfoActivity extends AppCompatActivity {
         modifyButton = findViewById(R.id.infoModifyButton);
         rentBikeView = findViewById(R.id.infoRentBikeView);
         modelNameView = findViewById(R.id.infoModelnameView);
+        manageBikeButton = findViewById(R.id.infoManagebikeButton);
 
         idView.setText(intent.getStringExtra("userId"));
         pointView.setText("p");
@@ -87,6 +88,15 @@ public class InfoActivity extends AppCompatActivity {
         }catch (ExecutionException e) {
             e.printStackTrace();
         }
+
+        manageBikeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(InfoActivity.this, MyBikeActivity.class);
+                intent.putExtra("userId", userId);
+                startActivity(intent);
+            }
+        });
 
         modifyButton.setOnClickListener(new View.OnClickListener() {
             @Override

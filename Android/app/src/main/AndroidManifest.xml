@@ -24,9 +24,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        
-        <activity android:name=".SmartLockActivity"></activity>
-        <activity android:name=".ReviewActivity"></activity>
+        <activity android:name=".MyBikeActivity"></activity>
+        <activity android:name=".SmartLockActivity" />
+        <activity android:name=".ReviewActivity" />
         <activity android:name=".BluetoothActivity" />
         <activity android:name=".CameraTestActivity" />
         <activity android:name=".Bluetooth.DeviceList" />
@@ -75,7 +75,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".deprecate.MainActivity" />
-
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".RentActivity" />
