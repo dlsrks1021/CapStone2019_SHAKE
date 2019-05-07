@@ -102,17 +102,21 @@ public class BikeRegisterActivity extends AppCompatActivity {
                 ArrayList<String> queryResult;
                 ArrayList<String> queryResult_smartlock;
 
+
+
                 PhpConnect task = new PhpConnect();
+                PhpConnect task2 = new PhpConnect();
                 try {
                     //Bike Table에 저장
-                    queryResult = task.execute("http://13.125.229.179/insertBikeInfo.php?owner=" + owner + "&bikecode=" + bikecode + "&latitude=" + Double.toString(latitude) + "&longitude=" + Double.toString(longitude)
+                    task.execute("http://13.125.229.179/insertBikeInfo.php?owner=" + owner + "&bikecode=" + bikecode + "&latitude=" + Double.toString(latitude) + "&longitude=" + Double.toString(longitude)
                             + "&cost=" + sCost + "&url=" + imageurl + "&lockId=" + sLockId + "&model=" + sModel + "&type=" + sType + "&addInfo=" + sAddInfo).get();
-
                     //Smart Lock Table에 저장
+                    task2.execute("http://13.125.229.179/insertSmartlockInfo.php?userId="+owner+"&bikecode="+bikecode+"&lockId="+sLockId).get();
+
                     Intent intent2 = new Intent();
                     BikeInfo newBike = new BikeInfo(owner, bikecode, latitude, longitude, Integer.parseInt(sCost), imageurl, sLockId, sModel, sType, sAddInfo);
                     intent2.putExtra("newBike", newBike);
-                    setResult(RESULT_OK, intent);
+                    setResult(RESULT_OK, intent2);
                     
                     finish();
                 }catch (ExecutionException e){
