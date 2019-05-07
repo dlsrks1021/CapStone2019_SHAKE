@@ -19,6 +19,7 @@ public class ReviewActivity extends AppCompatActivity {
 
     float rating;
     String userId;
+    String imageUrl;
     int rentnumber;
 
     @Override
@@ -28,8 +29,8 @@ public class ReviewActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         userId = intent.getStringExtra("userId");
-        rentnumber = intent.getIntExtra("rentnumber", -1);
-
+        //rentnumber = intent.getIntExtra("rentnumber", -1);
+        rentnumber = 1;
         ratingBar = findViewById(R.id.reviewRatingBar);
         review = findViewById(R.id.reviewEdit);
         submitButton = findViewById(R.id.reviewSubmitButton);
@@ -43,19 +44,22 @@ public class ReviewActivity extends AppCompatActivity {
             }
         });
 
+
+        imageUrl = "not implemented yet";
+
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (rentnumber == -1){
+                /*if (rentnumber == -1){
                     Toast.makeText(getApplicationContext(),"rentnumber error!",Toast.LENGTH_SHORT).show();
                 }
-                if (review.getText().toString().equals("")){
+                else */if (review.getText().toString().equals("")){
                     Toast.makeText(getApplicationContext(),"내용을 입력해주세요!",Toast.LENGTH_SHORT).show();
                 }
                 else{
                     PhpConnect task = new PhpConnect();
                     try {
-                        task.execute("http://13.125.229.179/insertReview.php?rentnumber="+rentnumber+"&contents="+review.getText().toString()+"&imageUrl=").get();
+                        task.execute("http://13.125.229.179/insertReview.php?rentnumber="+Integer.toString(rentnumber)+"&contents="+review.getText().toString()+"&imageUrl="+imageUrl+"&rating="+Float.toString(rating)).get();
                         Toast.makeText(getApplicationContext(),"리뷰가 등록되었습니다!",Toast.LENGTH_SHORT).show();
                         finish();
                     }catch (InterruptedException e){
