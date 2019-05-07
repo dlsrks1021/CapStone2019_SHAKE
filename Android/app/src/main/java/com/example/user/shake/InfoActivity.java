@@ -70,8 +70,8 @@ public class InfoActivity extends AppCompatActivity {
         passwordEdit = findViewById(R.id.infoPasswordEdit);
         checkPasswordEdit = findViewById(R.id.infoCheckPasswordEdit);
         modifyButton = findViewById(R.id.infoModifyButton);
-        rentBikeView = findViewById(R.id.infoRentBikeView);
-        modelNameView = findViewById(R.id.infoModelnameView);
+        //rentBikeView = findViewById(R.id.infoRentBikeView);
+        //modelNameView = findViewById(R.id.infoModelnameView);
 
         idView.setText(intent.getStringExtra("userId"));
         pointView.setText("p");
