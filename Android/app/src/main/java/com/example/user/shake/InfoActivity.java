@@ -41,6 +41,10 @@ public class InfoActivity extends AppCompatActivity {
     TextView idView;
     TextView emailView;
     TextView pointView;
+    EditText passwordEdit;
+    EditText checkPasswordEdit;
+    Button modifyButton;
+
     //Test
     private final int PERMISSIONS_ACCESS_FINE_LOCATION = 1000;
     private final int PERMISSIONS_ACCESS_COARSE_LOCATION = 1001;
@@ -67,6 +71,9 @@ public class InfoActivity extends AppCompatActivity {
         idView = findViewById(R.id.infoIdView);
         emailView = findViewById(R.id.infoEmailView);
         pointView = findViewById(R.id.infoPointView);
+        passwordEdit = findViewById(R.id.infoPasswordEdit);
+        checkPasswordEdit = findViewById(R.id.infoCheckPasswordEdit);
+        modifyButton = findViewById(R.id.infoModifyButton);
 
         idView.setText(intent.getStringExtra("userId"));
         pointView.setText("p");
@@ -82,6 +89,27 @@ public class InfoActivity extends AppCompatActivity {
         }catch (ExecutionException e) {
             e.printStackTrace();
         }
+
+        modifyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (passwordEdit.getText().toString().equals(checkPasswordEdit.getText().toString())){
+                    PhpConnect task2 = new PhpConnect();
+                    try {
+                        task2.execute("http://13.125.229.179/getEmailInfo.php?userId="+userId+"&password="+passwordEdit.getText().toString()).get();
+                        Toast.makeText(getApplicationContext(),"비밀번호가 변경되었습니다!",Toast.LENGTH_SHORT).show();
+                        finish();
+                    }catch (InterruptedException e){
+                        e.printStackTrace();
+                    }catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else{
+                    Toast.makeText(getApplicationContext(),"비밀번호가 일치하지 않습니다!",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         PermissionListener permissionlistener = new PermissionListener() {
             @Override
