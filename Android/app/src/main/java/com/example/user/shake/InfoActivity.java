@@ -4,14 +4,10 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.icu.text.IDNA;
-import android.icu.text.SimpleDateFormat;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,13 +21,13 @@ import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
+import com.example.user.shake.Request.CheckRequest;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 public class InfoActivity extends AppCompatActivity {
@@ -289,6 +285,11 @@ public class InfoActivity extends AppCompatActivity {
         } else {
             isPermission = true;
         }
+    }
+
+    public void smart_key_clicked(View v){
+        Intent intent2 = new Intent(InfoActivity.this, BluetoothActivity.class);
+        InfoActivity.this.startActivity(intent2);
     }
 
 //Test end

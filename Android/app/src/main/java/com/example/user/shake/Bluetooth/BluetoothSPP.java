@@ -16,10 +16,10 @@ import android.widget.Toast;
 @SuppressLint("NewApi")
 public class BluetoothSPP {
     // Listener for Bluetooth Status & Connection
-    private app.akexorcist.bluetotohspp.library.BluetoothSPP.BluetoothStateListener mBluetoothStateListener = null;
-    private app.akexorcist.bluetotohspp.library.BluetoothSPP.OnDataReceivedListener mDataReceivedListener = null;
-    private app.akexorcist.bluetotohspp.library.BluetoothSPP.BluetoothConnectionListener mBluetoothConnectionListener = null;
-    private app.akexorcist.bluetotohspp.library.BluetoothSPP.AutoConnectionListener mAutoConnectionListener = null;
+    private BluetoothSPP.BluetoothStateListener mBluetoothStateListener = null;
+    private BluetoothSPP.OnDataReceivedListener mDataReceivedListener = null;
+    private BluetoothSPP.BluetoothConnectionListener mBluetoothConnectionListener = null;
+    private BluetoothSPP.AutoConnectionListener mAutoConnectionListener = null;
 
     // Context from activity which call this class
     private Context mContext;
@@ -41,9 +41,9 @@ public class BluetoothSPP {
     private boolean isServiceRunning = false;
 
     private String keyword = "";
-    private boolean isAndroid = app.akexorcist.bluetotohspp.library.BluetoothState.DEVICE_ANDROID;
+    private boolean isAndroid = BluetoothState.DEVICE_ANDROID;
 
-    private app.akexorcist.bluetotohspp.library.BluetoothSPP.BluetoothConnectionListener bcl;
+    private BluetoothSPP.BluetoothConnectionListener bcl;
     private int c = 0;
 
     public BluetoothSPP(Context context) {
@@ -121,7 +121,7 @@ public class BluetoothSPP {
 
     public void startService(boolean isAndroid) {
         if (mChatService != null) {
-            if (mChatService.getState() == app.akexorcist.bluetotohspp.library.BluetoothState.STATE_NONE) {
+            if (mChatService.getState() == BluetoothState.STATE_NONE) {
                 isServiceRunning = true;
                 mChatService.start(isAndroid);
                 BluetoothSPP.this.isAndroid = isAndroid;
@@ -154,9 +154,9 @@ public class BluetoothSPP {
     private final Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case app.akexorcist.bluetotohspp.library.BluetoothState.MESSAGE_WRITE:
+                case BluetoothState.MESSAGE_WRITE:
                     break;
-                case app.akexorcist.bluetotohspp.library.BluetoothState.MESSAGE_READ:
+                case BluetoothState.MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
                     String readMessage = new String(readBuf);
                     if(readBuf != null && readBuf.length > 0) {
@@ -164,21 +164,21 @@ public class BluetoothSPP {
                             mDataReceivedListener.onDataReceived(readBuf, readMessage);
                     }
                     break;
-                case app.akexorcist.bluetotohspp.library.BluetoothState.MESSAGE_DEVICE_NAME:
-                    mDeviceName = msg.getData().getString(app.akexorcist.bluetotohspp.library.BluetoothState.DEVICE_NAME);
-                    mDeviceAddress = msg.getData().getString(app.akexorcist.bluetotohspp.library.BluetoothState.DEVICE_ADDRESS);
+                case BluetoothState.MESSAGE_DEVICE_NAME:
+                    mDeviceName = msg.getData().getString(BluetoothState.DEVICE_NAME);
+                    mDeviceAddress = msg.getData().getString(BluetoothState.DEVICE_ADDRESS);
                     if(mBluetoothConnectionListener != null)
                         mBluetoothConnectionListener.onDeviceConnected(mDeviceName, mDeviceAddress);
                     isConnected = true;
                     break;
-                case app.akexorcist.bluetotohspp.library.BluetoothState.MESSAGE_TOAST:
-                    Toast.makeText(mContext, msg.getData().getString(app.akexorcist.bluetotohspp.library.BluetoothState.TOAST)
+                case BluetoothState.MESSAGE_TOAST:
+                    Toast.makeText(mContext, msg.getData().getString(BluetoothState.TOAST)
                             , Toast.LENGTH_SHORT).show();
                     break;
-                case app.akexorcist.bluetotohspp.library.BluetoothState.MESSAGE_STATE_CHANGE:
+                case BluetoothState.MESSAGE_STATE_CHANGE:
                     if(mBluetoothStateListener != null)
                         mBluetoothStateListener.onServiceStateChanged(msg.arg1);
-                    if(isConnected && msg.arg1 != app.akexorcist.bluetotohspp.library.BluetoothState.STATE_CONNECTED) {
+                    if(isConnected && msg.arg1 != BluetoothState.STATE_CONNECTED) {
                         if(mBluetoothConnectionListener != null)
                             mBluetoothConnectionListener.onDeviceDisconnected();
                         if(isAutoConnectionEnabled) {
@@ -190,10 +190,10 @@ public class BluetoothSPP {
                         mDeviceAddress = null;
                     }
 
-                    if(!isConnecting && msg.arg1 == app.akexorcist.bluetotohspp.library.BluetoothState.STATE_CONNECTING) {
+                    if(!isConnecting && msg.arg1 == BluetoothState.STATE_CONNECTING) {
                         isConnecting = true;
                     } else if(isConnecting) {
-                        if(msg.arg1 != app.akexorcist.bluetotohspp.library.BluetoothState.STATE_CONNECTED) {
+                        if(msg.arg1 != BluetoothState.STATE_CONNECTED) {
                             if(mBluetoothConnectionListener != null)
                                 mBluetoothConnectionListener.onDeviceConnectionFailed();
                         }
@@ -209,7 +209,7 @@ public class BluetoothSPP {
     }
 
     public void connect(Intent data) {
-        String address = data.getExtras().getString(app.akexorcist.bluetotohspp.library.BluetoothState.EXTRA_DEVICE_ADDRESS);
+        String address = data.getExtras().getString(BluetoothState.EXTRA_DEVICE_ADDRESS);
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
         mChatService.connect(device);
     }
@@ -223,26 +223,26 @@ public class BluetoothSPP {
         if(mChatService != null) {
             isServiceRunning = false;
             mChatService.stop();
-            if(mChatService.getState() == app.akexorcist.bluetotohspp.library.BluetoothState.STATE_NONE) {
+            if(mChatService.getState() == BluetoothState.STATE_NONE) {
                 isServiceRunning = true;
                 mChatService.start(BluetoothSPP.this.isAndroid);
             }
         }
     }
 
-    public void setBluetoothStateListener (app.akexorcist.bluetotohspp.library.BluetoothSPP.BluetoothStateListener listener) {
+    public void setBluetoothStateListener (BluetoothSPP.BluetoothStateListener listener) {
         mBluetoothStateListener = listener;
     }
 
-    public void setOnDataReceivedListener (app.akexorcist.bluetotohspp.library.BluetoothSPP.OnDataReceivedListener listener) {
+    public void setOnDataReceivedListener (BluetoothSPP.OnDataReceivedListener listener) {
         mDataReceivedListener = listener;
     }
 
-    public void setBluetoothConnectionListener (app.akexorcist.bluetotohspp.library.BluetoothSPP.BluetoothConnectionListener listener) {
+    public void setBluetoothConnectionListener (BluetoothSPP.BluetoothConnectionListener listener) {
         mBluetoothConnectionListener = listener;
     }
 
-    public void setAutoConnectionListener(app.akexorcist.bluetotohspp.library.BluetoothSPP.AutoConnectionListener listener) {
+    public void setAutoConnectionListener(BluetoothSPP.AutoConnectionListener listener) {
         mAutoConnectionListener = listener;
     }
 
@@ -251,7 +251,7 @@ public class BluetoothSPP {
     }
 
     public void send(byte[] data, boolean CRLF) {
-        if(mChatService.getState() == app.akexorcist.bluetotohspp.library.BluetoothState.STATE_CONNECTED) {
+        if(mChatService.getState() == BluetoothState.STATE_CONNECTED) {
             if(CRLF) {
                 byte[] data2 = new byte[data.length + 2];
                 for(int i = 0 ; i < data.length ; i++)
@@ -322,7 +322,7 @@ public class BluetoothSPP {
                 }
             }
 
-            bcl = new app.akexorcist.bluetotohspp.library.BluetoothSPP.BluetoothConnectionListener() {
+            bcl = new BluetoothSPP.BluetoothConnectionListener() {
                 public void onDeviceConnected(String name, String address) {
                     bcl = null;
                     isAutoConnecting = false;

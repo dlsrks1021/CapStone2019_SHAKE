@@ -32,6 +32,7 @@ public class BluetoothActivity extends AppCompatActivity {
     int count_flag=0;
     Button btnConnect;
     ImageView btnSend;
+    private String MACAddress="98:D3:31:FD:5E:03";//맥주소 받아오는걸로 수정해야함
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,13 +47,11 @@ public class BluetoothActivity extends AppCompatActivity {
         bt = new BluetoothSPP(this); //Initializing
 
         if (!bt.isBluetoothAvailable()) { //블루투스 사용 불가
-            Toast.makeText(getApplicationContext()
-                    , "Bluetooth is not available"
-                    , Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Bluetooth is not available", Toast.LENGTH_SHORT).show();
             finish();
         }
 
-        /*bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() { //데이터 수신
+        bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() { //데이터 수신
             public void onDataReceived(byte[] data, String message) {
                 Toast.makeText(BluetoothActivity.this, message, Toast.LENGTH_SHORT).show();
             }
@@ -60,29 +59,27 @@ public class BluetoothActivity extends AppCompatActivity {
 
         bt.setBluetoothConnectionListener(new BluetoothSPP.BluetoothConnectionListener() { //연결됐을 때
             public void onDeviceConnected(String name, String address) {
-                Toast.makeText(getApplicationContext()
-                        , "Connected to " + name + "\n" + address
-                        , Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "Connected to " + name + "\n" + address, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"스마트키에 연결되었습니다",Toast.LENGTH_SHORT).show();
             }
 
             public void onDeviceDisconnected() { //연결해제
-                Toast.makeText(getApplicationContext()
-                        , "Connection lost", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Connection lost", Toast.LENGTH_SHORT).show();
             }
 
             public void onDeviceConnectionFailed() { //연결실패
-                Toast.makeText(getApplicationContext()
-                        , "Unable to connect", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Unable to connect", Toast.LENGTH_SHORT).show();
             }
-        });*/
+        });
 
         btnConnect.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (bt.getServiceState() == BluetoothState.STATE_CONNECTED) {
                     bt.disconnect();
                 } else {
-                    Intent intent = new Intent(getApplicationContext(), DeviceList.class);
-                    startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
+                    bt.connect("98:D3:31:FD:5E:03");
+                    //Intent intent = new Intent(getApplicationContext(), DeviceList.class);
+                    //startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
                 }
             }
         });

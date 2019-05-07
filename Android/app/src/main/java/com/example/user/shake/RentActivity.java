@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
+import com.example.user.shake.Request.CheckRequest;
 import com.example.user.shake.Request.RentRequest;
 
 import org.json.JSONObject;
@@ -99,7 +100,7 @@ public class RentActivity extends AppCompatActivity {
                     Date date = new Date();
                     Calendar cal = Calendar.getInstance(); cal.setTime(date); // 10분 더하기
                     cal.add(Calendar.HOUR, 1);//return 할때 몇시간 빌리는지 넣어주면 됨
-                    String return_time = dayTime.format(cal.getTime()); System.out.println(day+"      "+ return_time);
+                    String return_time = dayTime.format(cal.getTime()); //System.out.println(day+"      "+ return_time);
                     RentRequest rentRequest = new RentRequest(intent.getStringExtra("bikecode"), intent.getStringExtra("borrower"), day, return_time, 0, 0, responseListener);
                     RequestQueue queue = Volley.newRequestQueue(RentActivity.this);
                     queue.add(rentRequest);
