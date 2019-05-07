@@ -29,7 +29,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        final EditText idText = (EditText) findViewById(R.id.id_edit);
+        final EditText idText = (EditText) findViewById(R.id.id_edit_login);
         final EditText passwordText = (EditText) findViewById(R.id.password_edit);
         final Button loginbtn = (Button) findViewById(R.id.login_button);
         final TextView registerbtn = (TextView) findViewById(R.id.register_button);
@@ -39,7 +39,6 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final String userID = idText.getText().toString();
                 final String userPassword = passwordText.getText().toString();
-
                 Response.Listener<String> responseListener = new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -47,8 +46,8 @@ public class LoginActivity extends AppCompatActivity {
                             JSONObject jsonResponse = new JSONObject(response);
                             boolean success = jsonResponse.getBoolean("success");
                             if(success){
-                                String userID = jsonResponse.getString("userID");
-                                String userPassword = jsonResponse.getString("userPassword");
+                                //String userID = jsonResponse.getString("userID");
+                                //String userPassword = jsonResponse.getString("userPassword");
                                 //System.out.println(jsonResponse);
                                 Intent intent = new Intent(LoginActivity.this, Main2Activity.class);
                                 intent.putExtra("userID",userID);

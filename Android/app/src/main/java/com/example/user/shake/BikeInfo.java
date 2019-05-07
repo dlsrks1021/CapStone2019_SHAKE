@@ -1,6 +1,8 @@
 package com.example.user.shake;
 
-public class BikeInfo {
+import java.io.Serializable;
+
+public class BikeInfo implements Serializable {
 
     private String bikeOwner, bikeCode, bikeImgUrl, bikeLockId, bikeModelName, bikeType, bikeAddInfo;
     private double bikeLatitude, bikeLongitude;
@@ -29,5 +31,13 @@ public class BikeInfo {
     }
     public String getBikeCode(){
         return bikeCode;
+    }
+
+    public double getBikeLongitude() {
+        return bikeLongitude;
+    }
+
+    public String getBikeType() {
+        return bikeType;
     }
 }

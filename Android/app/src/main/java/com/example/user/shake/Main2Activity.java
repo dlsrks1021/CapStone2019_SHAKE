@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -57,7 +58,7 @@ public class Main2Activity extends AppCompatActivity
         Intent intent = getIntent();
         userID = intent.getStringExtra("userID");
 
-        //Toast.makeText(getApplicationContext(),userName,Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(),userID,Toast.LENGTH_SHORT).show();
         mContext=this;
 
         navTitle = findViewById(R.id.textNavTitle);
@@ -144,7 +145,7 @@ public class Main2Activity extends AppCompatActivity
         } else if (id == R.id.itemRegister) {
             Intent intent2 = new Intent(Main2Activity.this, BikeRegisterActivity.class);
             intent2.putExtra("userId", userID);
-            Main2Activity.this.startActivity(intent2);
+            startActivityForResult(intent2, 2);
         }
         else if (id == R.id.itemInfo) {
             Intent intent2 = new Intent(Main2Activity.this, InfoActivity.class);
@@ -161,11 +162,28 @@ public class Main2Activity extends AppCompatActivity
             intent2.putExtra("userId", userID);
             Main2Activity.this.startActivity(intent2);
         }
-
+        else if(id == R.id.itemReview){
+            Intent intent2 = new Intent(Main2Activity.this, ReviewActivity.class);
+            intent2.putExtra("userId", userID);
+            Main2Activity.this.startActivity(intent2);
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode == RESULT_OK){
+            if (requestCode == 2){
+                MarkerOptions markerOptions = new MarkerOptions();
+                BikeInfo newBike = (BikeInfo) data.getSerializableExtra("newBike");
+                bikeList.add(newBike);
+                LatLng bikeLocation = new LatLng(newBike.getBikeLatitude(), newBike.getBikeLongitude());
+                simpleAddMarker(mMap, markerOptions, bikeLocation, newBike.getBikeOwner(), "자전거 종류: " + newBike.getBikeType());
+            }
+        }
     }
 
     @Override
@@ -211,8 +229,9 @@ public class Main2Activity extends AppCompatActivity
         }
 
         LatLng SEOUL = new LatLng(37.506, 126.958);
-        map.moveCamera(CameraUpdateFactory.newLatLng(SEOUL));
-        map.animateCamera(CameraUpdateFactory.zoomTo(13));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(SEOUL));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
+
 
         mMap.setOnMarkerClickListener(this);
     }

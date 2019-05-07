@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,10 +32,18 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 public class InfoActivity extends AppCompatActivity {
 
     private String rentnumber;
+    String userId;
+    TextView idView;
+    TextView emailView;
+    TextView pointView;
+    EditText passwordEdit;
+    EditText checkPasswordEdit;
+    Button modifyButton;
 
     //Test
     private final int PERMISSIONS_ACCESS_FINE_LOCATION = 1000;
@@ -52,10 +61,55 @@ public class InfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
 
+        Intent intent = getIntent();
+        userId = intent.getStringExtra("userId");
         String[] info = new String[2];
         info=((Main2Activity)Main2Activity.mContext).getInfo();
         final String borrower = info[0];
         final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        idView = findViewById(R.id.infoIdView);
+        emailView = findViewById(R.id.infoEmailView);
+        pointView = findViewById(R.id.infoPointView);
+        passwordEdit = findViewById(R.id.infoPasswordEdit);
+        checkPasswordEdit = findViewById(R.id.infoCheckPasswordEdit);
+        modifyButton = findViewById(R.id.infoModifyButton);
+
+        idView.setText(intent.getStringExtra("userId"));
+        pointView.setText("p");
+
+        PhpConnect task = new PhpConnect();
+        ArrayList<String> userEmail;
+
+        try {
+            userEmail = task.execute("http://13.125.229.179/getEmailInfo.php?userId="+userId).get();
+            emailView.setText(userEmail.get(0));
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        modifyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (passwordEdit.getText().toString().equals(checkPasswordEdit.getText().toString())){
+                    PhpConnect task2 = new PhpConnect();
+                    try {
+                        task2.execute("http://13.125.229.179/getEmailInfo.php?userId="+userId+"&password="+passwordEdit.getText().toString()).get();
+                        Toast.makeText(getApplicationContext(),"비밀번호가 변경되었습니다!",Toast.LENGTH_SHORT).show();
+                        finish();
+                    }catch (InterruptedException e){
+                        e.printStackTrace();
+                    }catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else{
+                    Toast.makeText(getApplicationContext(),"비밀번호가 일치하지 않습니다!",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         PermissionListener permissionlistener = new PermissionListener() {
             @Override
@@ -90,11 +144,10 @@ public class InfoActivity extends AppCompatActivity {
                     JSONObject jsonResponse = new JSONObject(response);
                     boolean success = jsonResponse.getBoolean("success");
                     if(success){
-                        content.setText("대여 중인 자전거가 없습니다");
-
+                        content.setText("X");
                     }
                     else{
-                        content.setText("대여 중인 \n자전거가 있습니다");
+                        content.setText("O");
                         rentnumber=jsonResponse.getString("rentnumber");
                     }
                 }

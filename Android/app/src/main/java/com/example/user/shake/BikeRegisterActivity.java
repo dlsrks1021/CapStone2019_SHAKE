@@ -109,7 +109,11 @@ public class BikeRegisterActivity extends AppCompatActivity {
                             + "&cost=" + sCost + "&url=" + imageurl + "&lockId=" + sLockId + "&model=" + sModel + "&type=" + sType + "&addInfo=" + sAddInfo).get();
 
                     //Smart Lock Table에 저장
-
+                    Intent intent2 = new Intent();
+                    BikeInfo newBike = new BikeInfo(owner, bikecode, latitude, longitude, Integer.parseInt(sCost), imageurl, sLockId, sModel, sType, sAddInfo);
+                    intent2.putExtra("newBike", newBike);
+                    setResult(RESULT_OK, intent);
+                    
                     finish();
                 }catch (ExecutionException e){
 
