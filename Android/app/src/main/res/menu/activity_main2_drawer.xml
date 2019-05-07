@@ -16,6 +16,10 @@
         <item
             android:id="@+id/itemcamera"
             android:title="Camera(TEST)" />
+        <item
+            android:id="@+id/itemReview"
+            android:title="리뷰등록(TEST)"
+            />
     </group>
 
 </menu>
