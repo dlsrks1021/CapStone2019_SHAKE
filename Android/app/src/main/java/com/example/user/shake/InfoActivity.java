@@ -39,8 +39,8 @@ public class InfoActivity extends AppCompatActivity {
     private String rentnumber;
     String userId;
     TextView idView;
-    TextView emailView;
-    TextView pointView;
+    TextView emailView, rentBikeView;
+    TextView pointView, modelNameView;
     EditText passwordEdit;
     EditText checkPasswordEdit;
     Button modifyButton;
@@ -74,6 +74,8 @@ public class InfoActivity extends AppCompatActivity {
         passwordEdit = findViewById(R.id.infoPasswordEdit);
         checkPasswordEdit = findViewById(R.id.infoCheckPasswordEdit);
         modifyButton = findViewById(R.id.infoModifyButton);
+        rentBikeView = findViewById(R.id.infoRentBikeView);
+        modelNameView = findViewById(R.id.infoModelnameView);
 
         idView.setText(intent.getStringExtra("userId"));
         pointView.setText("p");
@@ -149,6 +151,16 @@ public class InfoActivity extends AppCompatActivity {
                     else{
                         content.setText("O");
                         rentnumber=jsonResponse.getString("rentnumber");
+                        rentBikeView.setVisibility(View.VISIBLE);
+                        PhpConnect task = new PhpConnect();
+                        try {
+                            ArrayList<String> result = task.execute("http://13.125.229.179/getModelnameByRentnumber.php?rentnumber="+rentnumber).get();
+                            modelNameView.setText(result.get(0));
+                        }catch (InterruptedException e){
+                            e.printStackTrace();
+                        }catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
                 catch (Exception e){
