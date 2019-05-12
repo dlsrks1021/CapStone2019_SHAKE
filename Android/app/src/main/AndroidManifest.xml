@@ -24,7 +24,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".MyBikeActivity"></activity>
+        <activity android:name=".ReportActivity"></activity>
+        <activity android:name=".AdminMainActivity" />
+        <activity android:name=".testActivity" />
+        <activity android:name=".MyBikeActivity" />
         <activity android:name=".SmartLockActivity" />
         <activity android:name=".ReviewActivity" />
         <activity android:name=".BluetoothActivity" />

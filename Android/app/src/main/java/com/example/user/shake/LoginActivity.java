@@ -50,10 +50,16 @@ public class LoginActivity extends AppCompatActivity {
                                 //String userPassword = jsonResponse.getString("userPassword");
                                 //System.out.println(jsonResponse);
                                 Intent intent = new Intent(LoginActivity.this, Main2Activity.class);
+                                Intent intent_admin = new Intent(LoginActivity.this,AdminMainActivity.class);
                                 intent.putExtra("userID",userID);
                                 intent.putExtra("userPassword",userPassword);
                                 //intent.putExtra("userName",userName);
-                                LoginActivity.this.startActivity(intent);
+                                if(userID=="shake_admin"){
+                                    LoginActivity.this.startActivity(intent_admin);
+                                }
+                                else {
+                                    LoginActivity.this.startActivity(intent);
+                                }
                             }
                             else{
                                 AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);

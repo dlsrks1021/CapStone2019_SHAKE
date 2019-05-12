@@ -140,7 +140,7 @@ public class Main2Activity extends AppCompatActivity
 
 
         if (id == R.id.itemRent) {
-            Intent intent = new Intent(Main2Activity.this, RentActivity.class);
+            Intent intent = new Intent(Main2Activity.this, ReportActivity.class);
             Main2Activity.this.startActivity(intent);
         } else if (id == R.id.itemRegister) {
             Intent intent2 = new Intent(Main2Activity.this, BikeRegisterActivity.class);
@@ -153,7 +153,7 @@ public class Main2Activity extends AppCompatActivity
             Main2Activity.this.startActivity(intent2);
         }
         else if (id == R.id.itemcamera) {
-            Intent intent2 = new Intent(Main2Activity.this, BluetoothActivity.class);
+            Intent intent2 = new Intent(Main2Activity.this, CameraActivity.class);
             intent2.putExtra("userId", userID);
             Main2Activity.this.startActivity(intent2);
         }
