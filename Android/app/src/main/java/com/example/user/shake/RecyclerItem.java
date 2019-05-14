@@ -4,12 +4,10 @@ import java.util.Date;
 
 public class RecyclerItem{
 
-    private String name, owner, bike, content;
+    private String name, owner, bike, content, date;
     private float rating;
-    private int rentTime;
-    private Date date;
 
-    public RecyclerItem (String name){
+    public RecyclerItem (){
         this.name = name;
     }
 
@@ -17,16 +15,12 @@ public class RecyclerItem{
         return name;
     }
 
-    public Date getDate() {
+    public String  getDate() {
         return date;
     }
 
     public float getRating() {
         return rating;
-    }
-
-    public int getRentTime() {
-        return rentTime;
     }
 
     public String getBike() {
@@ -39,5 +33,29 @@ public class RecyclerItem{
 
     public String getContent() {
         return content;
+    }
+
+    public void setBike(String bike) {
+        this.bike = bike;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
     }
 }
