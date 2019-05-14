@@ -26,7 +26,7 @@ public class ReviewListActivity extends AppCompatActivity {
     }
 
     private void setRecyclerView(){
-        adapter = new RecyclerAdapter(mItems);
+        adapter = new RecyclerAdapter(getApplicationContext(), mItems);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         setData();
@@ -42,17 +42,19 @@ public class ReviewListActivity extends AppCompatActivity {
 
         try {
             String reviewContent="", reviewRating="", rentTime="";
-            String bikeOwner="", bikeModel="", reviewOwner="";
+            String bikeOwner="", bikeModel="", reviewOwner="", reviewImage = "";
             reviewList = task.execute("http://13.125.229.179/getReviewList.php").get();
             rentList = task2.execute("http://13.125.229.179/getRentList.php").get();
             bikeList = task3.execute("http://13.125.229.179/getBikeList.php").get();
 
-            for (int i = 0; i < reviewList.size(); i += 2){
+            for (int i = 0; i < reviewList.size(); i += 3){
                 RecyclerItem recyclerItem = new RecyclerItem();
                 reviewContent = reviewList.get(i);
                 reviewRating = reviewList.get(i + 1);
+                reviewImage = reviewList.get(i + 2);
                 recyclerItem.setContent(reviewContent);
                 recyclerItem.setRating(Float.parseFloat(reviewRating));
+                recyclerItem.setImageUrl(reviewImage);
                 mItems.add(recyclerItem);
             }
             for (int i = 0; i < rentList.size(); i += 2){

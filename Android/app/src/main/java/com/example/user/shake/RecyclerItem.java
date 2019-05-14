@@ -4,11 +4,19 @@ import java.util.Date;
 
 public class RecyclerItem{
 
-    private String name, owner, bike, content, date;
+    private String name, owner, bike, content, date, imageUrl;
     private float rating;
 
     public RecyclerItem (){
         this.name = name;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getName() {

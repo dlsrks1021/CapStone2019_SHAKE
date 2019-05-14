@@ -1,19 +1,26 @@
 package com.example.user.shake;
 
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.GlideContext;
 
 import java.util.ArrayList;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemViewHolder> {
     ArrayList<RecyclerItem> mItems;
-
-    public RecyclerAdapter(ArrayList<RecyclerItem> items){
+    Context context;
+    public RecyclerAdapter(Context context, ArrayList<RecyclerItem> items){
         mItems = items;
+        this.context = context;
     }
 
 
@@ -33,6 +40,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
         holder.ownerBikeView.setText(mItems.get(position).getOwner()+"'s "+mItems.get(position).getBike());
         holder.contentView.setText(mItems.get(position).getContent());
         holder.ratingBar.setRating(mItems.get(position).getRating());
+        if (mItems.get(position).getImageUrl().contains("http")) {
+            Glide.with(context).load(mItems.get(position).getImageUrl()).into(holder.bikeImage);
+        }
     }
 
     // 데이터 셋의 크기를 리턴해줍니다.
@@ -46,6 +56,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
     class ItemViewHolder extends RecyclerView.ViewHolder{
         private TextView nameView, dateView, ownerBikeView, contentView;
         private RatingBar ratingBar;
+        private ImageView bikeImage;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
@@ -53,8 +64,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
             dateView = itemView.findViewById(R.id.recyclerDateView);
             ownerBikeView = itemView.findViewById(R.id.recyclerOwnerBikeView);
             contentView = itemView.findViewById(R.id.recyclerContentView);
-
             ratingBar = itemView.findViewById(R.id.recyclerRatingBar);
+            bikeImage = itemView.findViewById(R.id.recyclerBikeImage);
 
         }
     }
