@@ -1,17 +1,21 @@
 package com.example.user.shake;
 
-import android.graphics.drawable.Drawable;
-
 public class ListVO {
-    private Drawable img;
+    private String img;
     private String Title;
     private String context;
 
-    public Drawable getImg() {
+    public ListVO(String img, String title, String context) {
+        this.img = img;
+        Title = title;
+        this.context = context;
+    }
+
+    public String getImg() {
         return img;
     }
 
-    public void setImg(Drawable img) {
+    public void setImg(String img) {
         this.img = img;
     }
 
