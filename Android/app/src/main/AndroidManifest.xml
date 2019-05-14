@@ -25,6 +25,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name=".ReportMainAcitivity"></activity>
+        <activity android:name=".ReviewListActivity" />
         <activity android:name=".ReportActivity" />
         <activity android:name=".AdminMainActivity" />
         <activity android:name=".testActivity" />
