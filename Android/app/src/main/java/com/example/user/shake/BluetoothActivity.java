@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.shake.Bluetooth.BluetoothSPP;
@@ -32,6 +33,8 @@ public class BluetoothActivity extends AppCompatActivity {
     int count_flag=0;
     Button btnConnect;
     ImageView btnSend;
+
+    TextView volt,percent;
     private String MACAddress="98:D3:31:FD:5E:03";//맥주소 받아오는걸로 수정해야함
 
     @Override
@@ -43,6 +46,8 @@ public class BluetoothActivity extends AppCompatActivity {
 
         permission = new PermissionCheck(BluetoothActivity.this);
         checkPermission();
+        volt=(TextView)findViewById(R.id.textView4);
+        percent=(TextView)findViewById(R.id.textView10);
 
         bt = new BluetoothSPP(this); //Initializing
 
@@ -51,9 +56,15 @@ public class BluetoothActivity extends AppCompatActivity {
             finish();
         }
 
+        //bt.connect("98:D3:31:FD:5E:03");
+
         bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() { //데이터 수신
             public void onDataReceived(byte[] data, String message) {
-                Toast.makeText(BluetoothActivity.this, message, Toast.LENGTH_SHORT).show();
+                volt.setText(message+"V");
+                percent.setText("84%");
+                //percent.setText(String.valueOf((Float.parseFloat(message)-6)/2.9*100).substring(0,4));
+                //Toast.makeText(BluetoothActivity.this, message, Toast.LENGTH_SHORT).show();
+                //System.out.println(data+"     "+message);
             }
         });
 

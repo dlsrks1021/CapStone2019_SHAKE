@@ -35,6 +35,7 @@ public class ReportActivity extends AppCompatActivity {
 
     private TextView explain;
     public String json_rentnumber,json_bikecode,json_rent_time;
+    Intent intent_main;
 
     //static ImageView imView;
     static String imgUrl = "http://13.125.229.179/JPEG_20190512_201100.jpg";
@@ -57,6 +58,7 @@ public class ReportActivity extends AppCompatActivity {
         Toast.makeText(getApplication(),"신고하고자 하는 항목을 선택하세요",Toast.LENGTH_SHORT).show();
         listview=(ListView)findViewById(R.id.listview_report);
         list_itemArrayList=new ArrayList<>();
+        intent_main = getIntent();
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
@@ -90,6 +92,7 @@ public class ReportActivity extends AppCompatActivity {
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             Toast.makeText(ReportActivity.this,list_itemArrayList.get(position).getTitle(),Toast.LENGTH_SHORT).show();
                             intent.putExtra("img_url","http://13.125.229.179/JPEG_20190512_201100.jpg");
+                            intent.putExtra("borrower",intent_main.getStringExtra("userId"));
                             intent.putExtra("bikecode",list_itemArrayList.get(position).getTitle());
                             intent.putExtra("renttime",list_itemArrayList.get(position).getContext());
                             startActivity(intent);
