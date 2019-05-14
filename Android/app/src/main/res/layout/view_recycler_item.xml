@@ -31,15 +31,6 @@
         android:textSize="15dp" />
 
     <TextView
-        android:id="@+id/recyclerRentTimeView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="312dp"
-        android:layout_marginTop="65dp"
-        android:text="1시간 대여"
-        android:textSize="15dp" />
-
-    <TextView
         android:id="@+id/recyclerOwnerBikeView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -49,11 +40,15 @@
         android:textSize="20dp" />
 
     <RatingBar style="?android:attr/ratingBarStyleSmall"
-        android:id="@+id/ratingBar"
+        android:id="@+id/recyclerRatingBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="300dp"
         android:layout_marginTop="23dp"
+        android:isIndicator="true"
+        android:numStars="5"
+        android:stepSize="0.5"
+        android:max="5"
         />
 
     <TextView
