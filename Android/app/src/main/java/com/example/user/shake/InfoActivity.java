@@ -22,12 +22,15 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 import com.example.user.shake.Request.CheckRequest;
+import com.example.user.shake.Request.ReturnRequest;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 public class InfoActivity extends AppCompatActivity {
@@ -51,6 +54,8 @@ public class InfoActivity extends AppCompatActivity {
     // GPSTracker class
     private GpsInfo gps;
     private Button btnShowLocation;
+    double latitude_dst,longitude_dst,latitude_src,longitude_src;
+    Location location_dst,location_src;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,11 +156,15 @@ public class InfoActivity extends AppCompatActivity {
                 try{
                     JSONObject jsonResponse = new JSONObject(response);
                     boolean success = jsonResponse.getBoolean("success");
+                    double latitude = jsonResponse.getDouble("latitude");
+                    double longitude = jsonResponse.getDouble("longitude");
                     if(success){
                         content.setText("X");
                     }
                     else{
                         content.setText("O");
+                        location_src=new Location("");
+                        latitude_src=latitude; longitude_src = longitude; location_src.setLatitude(latitude_src); location_src.setLongitude(longitude_src);
                         rentnumber=jsonResponse.getString("rentnumber");
                         rentBikeView.setVisibility(View.VISIBLE);
                         PhpConnect task = new PhpConnect();
@@ -213,13 +222,13 @@ public class InfoActivity extends AppCompatActivity {
                 // GPS 사용유무 가져오기
                 if (gps.isGetLocation()) {
 
-                    double latitude = gps.getLatitude();
-                    double longitude = gps.getLongitude();
+                    latitude_dst = gps.getLatitude();
+                    longitude_dst = gps.getLongitude();
                     Log.v("gps","gps OK");
-                    /*Toast.makeText(getApplication(),String.valueOf(latitude+"   "+longitude),Toast.LENGTH_SHORT).show();
+                    /*Toast.makeText(getApplication(),String.valueOf(latitude_dst+"   "+longitude_dst),Toast.LENGTH_SHORT).show();
                     Toast.makeText(
                             getApplicationContext(),
-                            "당신의 위치 - \n위도: " + latitude + "\n경도: " + longitude,
+                            "당신의 위치 - \n위도: " + latitude_dst + "\n경도: " + longitude_dst,
                             Toast.LENGTH_LONG).show();*/
                 } else {
                     // GPS 를 사용할수 없으므로
@@ -227,14 +236,24 @@ public class InfoActivity extends AppCompatActivity {
                     gps.showSettingsAlert();
                 }
                 if(!content.getText().equals("대여 중인 자전거가 없습니다")) {
-                    /*if(if문으로 위치 받아서 반납장소랑 현재 위치랑 비슷한지 비교해서 맞으면 실행){
+                    location_dst=new Location("");
+                    System.out.println(latitude_dst+"   "+longitude_dst+"   "+latitude_src+"   "+longitude_src);
+                    location_dst.setLatitude(latitude_dst);
+                    location_dst.setLongitude(longitude_dst);
+                    float distance =location_dst.distanceTo(location_src);
+                    if(distance<1000){//To be implement
                         long time = System.currentTimeMillis();
                         SimpleDateFormat dayTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                         String day = dayTime.format(new Date(time));
+                        //System.out.println("latitude= "+latitude_src+"   longitude= "+longitude_src);
+                        //Toast.makeText(getApplication(), "distance= "+distance, Toast.LENGTH_SHORT).show();
                         ReturnRequest returnRequest = new ReturnRequest(getIntent().getStringExtra("userId"), Integer.parseInt(rentnumber),day, "http://13.125.229.179/testimage.php", 123, responseListener);
                         RequestQueue queue = Volley.newRequestQueue(InfoActivity.this);
                         queue.add(returnRequest);
-                    }*/
+                    }
+                    else{
+                        Toast.makeText(getApplication(),"반납 장소와 가까이서 반납해주세요",Toast.LENGTH_SHORT).show();
+                    }
                 }
                 else{
                     Toast.makeText(getApplicationContext(),"대여 중인 자전거가 없습니다",Toast.LENGTH_SHORT).show();
