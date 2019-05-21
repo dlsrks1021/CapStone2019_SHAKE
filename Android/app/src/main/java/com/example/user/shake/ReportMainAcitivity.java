@@ -1,7 +1,9 @@
 package com.example.user.shake;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -27,6 +29,7 @@ public class ReportMainAcitivity extends AppCompatActivity {
     TextView textView_bikecode,textView_renttime;
     ImageView image;
     Button report_button;
+    int requestCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +40,8 @@ public class ReportMainAcitivity extends AppCompatActivity {
         borrower=intent.getStringExtra("borrower");
         img_url=intent.getStringExtra("img_url");
         rent_time=intent.getStringExtra("renttime");
-        System.out.println(bikecode+"   "+borrower+"   "+img_url+"   "+rent_time);
+        requestCode=intent.getIntExtra("requestCode",5);//Errorcode=5
+        System.out.println(bikecode+"   "+borrower+"   "+img_url+"   "+rent_time+"   "+requestCode);
         textView_bikecode=(TextView)findViewById(R.id.textView_report_bikecode_content);
         textView_renttime=(TextView)findViewById(R.id.textView_report_renttime_content);
         image=(ImageView)findViewById(R.id.imageView_report);
@@ -51,24 +55,43 @@ public class ReportMainAcitivity extends AppCompatActivity {
         report_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Response.Listener<String> responseListener = new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try{
-                            JSONObject jsonResponse = new JSONObject(response);
-                            boolean success = jsonResponse.getBoolean("success");
-                        }
-                        catch (Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                };
                 report_content=contents.getText().toString();
-                Toast.makeText(getApplication(),report_content,Toast.LENGTH_SHORT).show();
-                //report_content="TEST";
-                ReportRequest reportRequest = new ReportRequest(borrower,bikecode,rent_time,img_url, report_content,responseListener);
-                RequestQueue queue = Volley.newRequestQueue(ReportMainAcitivity.this);
-                queue.add(reportRequest);
+                if(requestCode==5){
+                    Toast.makeText(getApplication(),"잘못된 요청입니다. 다시 시도하세요",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ReportMainAcitivity.this);
+                    builder.setMessage("신고 후에는 취소할 수 없습니다.\n신고하시겠습니까?")
+                            .setPositiveButton("예", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Response.Listener<String> responseListener = new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String response) {
+                                            try{
+                                                JSONObject jsonResponse = new JSONObject(response);
+                                                boolean success = jsonResponse.getBoolean("success");
+                                            }
+                                            catch (Exception e){
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    };
+                                    ReportRequest reportRequest = new ReportRequest(borrower, bikecode, rent_time, img_url, report_content, requestCode, responseListener);
+                                    RequestQueue queue = Volley.newRequestQueue(ReportMainAcitivity.this);
+                                    queue.add(reportRequest);
+                                    finish();
+                                }
+                            })
+                            .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    ;
+                                }
+                            })
+                            .create()
+                            .show();
+                }
             }
         });
 

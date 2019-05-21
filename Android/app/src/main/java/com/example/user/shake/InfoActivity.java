@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.icu.text.IDNA;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -99,7 +98,7 @@ public class InfoActivity extends AppCompatActivity {
         manageBikeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(InfoActivity.this, MyBikeActivity.class);
+                Intent intent = new Intent(InfoActivity.this, MyBikeInfoActivity.class);
                 intent.putExtra("userId", userId);
                 startActivity(intent);
             }

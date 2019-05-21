@@ -44,7 +44,6 @@ public class ReportOwnerActivity extends AppCompatActivity {
         list_itemArrayList=new ArrayList<>();
         intent_main = getIntent();
         owner=intent_main.getStringExtra("userId");
-        //System.out.println("Owner = "+owner);
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
@@ -81,6 +80,7 @@ public class ReportOwnerActivity extends AppCompatActivity {
                             intent.putExtra("borrower",intent_main.getStringExtra("userId"));
                             intent.putExtra("bikecode",list_itemArrayList.get(position).getTitle());
                             intent.putExtra("renttime",list_itemArrayList.get(position).getContext());
+                            intent.putExtra("requestCode",1);//대여기록 = 0, 공유기록=1
                             startActivity(intent);
                         }
                     });

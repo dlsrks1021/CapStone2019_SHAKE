@@ -77,7 +77,7 @@ public class ReportActivity extends AppCompatActivity {
                         list_itemArrayList.add(new ListVO("http://13.125.229.179/JPEG_20190512_201100.jpg",json_bikecode.split("\"")[2*i+1],json_rent_time.split("\"")[2*i+1]));
                     }
                     final Intent intent = new Intent(ReportActivity.this,ReportMainAcitivity.class);
-
+                    System.out.println(list_itemArrayList.get(0));
                     //변수 초기화
                     adapter = new ReportViewAdapter(ReportActivity.this,list_itemArrayList);
                     listview = (ListView) findViewById(R.id.listview_report);
@@ -93,7 +93,9 @@ public class ReportActivity extends AppCompatActivity {
                             intent.putExtra("borrower",intent_main.getStringExtra("userId"));
                             intent.putExtra("bikecode",list_itemArrayList.get(position).getTitle());
                             intent.putExtra("renttime",list_itemArrayList.get(position).getContext());
+                            intent.putExtra("requestCode",0);//대여기록 = 0, 공유기록=1
                             startActivity(intent);
+                            finish();
                         }
                     });
 
