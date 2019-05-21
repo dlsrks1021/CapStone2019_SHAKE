@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -26,10 +28,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.user.shake.Request.PhpRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -49,6 +53,7 @@ public class Main2Activity extends AppCompatActivity
     TextView navContext;
     public static Context mContext;
     private ArrayList<BikeInfo> bikeList;
+    private ArrayList<BikeInfo> rankerList;
     private int markerClickFlag = -1;
 
     @Override
@@ -212,6 +217,44 @@ public class Main2Activity extends AppCompatActivity
         }
     }
 
+    private void findRanker(){
+        for (int i = 0; i < bikeList.size(); ++i){
+            float myRating = PhpRequest.getBikeRating(bikeList.get(i).getBikeCode());
+            int upRatingCount = 0;
+            int myReviewCount = PhpRequest.getReviewCount(bikeList.get(i).getBikeCode());
+
+            for (int j = 0; j < bikeList.size(); ++j){
+                float rating = 0;
+                double gapLatitude, gapLongitude, distance;
+                int reviewCount = PhpRequest.getReviewCount(bikeList.get(j).getBikeCode());
+
+                if (i == j)
+                    continue;
+
+
+                rating = PhpRequest.getBikeRating(bikeList.get(j).getBikeCode());
+
+                gapLatitude = bikeList.get(i).getBikeLatitude() - bikeList.get(j).getBikeLatitude();
+                gapLongitude = bikeList.get(i).getBikeLongitude() - bikeList.get(j).getBikeLongitude();
+                //위도 경도 km로 단위 변경
+                gapLatitude *= 110;
+                gapLongitude *= 88.74;
+                distance = Math.sqrt(Math.pow(gapLatitude, 2) + Math.pow(gapLongitude, 2));
+
+                if (distance <= 5 && reviewCount >= 10){
+                    if (myRating < rating){
+                        upRatingCount += 1;
+                    }
+                }
+                if (upRatingCount >= 3)
+                    break;
+            }
+            if (upRatingCount < 3 && myReviewCount >= 10){
+                rankerList.add(bikeList.get(i));
+            }
+        }
+    }
+
     @Override
     public void onMapReady(final GoogleMap map) {
 
@@ -223,6 +266,7 @@ public class Main2Activity extends AppCompatActivity
         double bikeLatitude = 0, bikeLongitude = 0;
         String bikeOwner = "", bikeType = "", bikeImgUrl = "", bikeCode = "";
         String bikeLockId = "", bikeModelName = "", bikeAddInfo = "";
+        float bikeRating = 0;
 
         mMap = map;
 
@@ -236,7 +280,7 @@ public class Main2Activity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        for (int i = 0; i < bikeLatLng.size(); i += 10){
+        for (int i = 0; i < bikeLatLng.size(); i += 11){
             bikeOwner = bikeLatLng.get(i);
             bikeCode = bikeLatLng.get(i + 1);
             bikeLatitude = Double.parseDouble(bikeLatLng.get(i + 2));
@@ -247,11 +291,29 @@ public class Main2Activity extends AppCompatActivity
             bikeModelName = bikeLatLng.get(i + 7);
             bikeType = bikeLatLng.get(i + 8);
             bikeAddInfo = bikeLatLng.get(i + 9);
+            bikeRating = Float.parseFloat(bikeLatLng.get(i + 10));
 
             BikeInfo bike = new BikeInfo(bikeOwner, bikeCode, bikeLatitude, bikeLongitude, bikeCost, bikeImgUrl, bikeLockId, bikeModelName, bikeType, bikeAddInfo);
+            bike.setBikeRating(bikeRating);
             bikeList.add(bike);
-            LatLng bikeLocation = new LatLng(bikeLatitude, bikeLongitude);
-            simpleAddMarker(map, markerOptions, bikeLocation, bikeOwner, "자전거 종류: " + bikeType);
+        }
+        rankerList = new ArrayList<>();
+        findRanker();
+
+        for (int i = 0; i < bikeList.size(); ++i){
+            LatLng bikeLocation = new LatLng(bikeList.get(i).getBikeLatitude(), bikeList.get(i).getBikeLongitude());
+            int rankerFlag = -1;
+            for (int j = 0; j < rankerList.size(); ++j) {
+                if (bikeList.get(i).getBikeCode().equals(rankerList.get(j).getBikeCode())){
+                    rankerFlag = j;
+                    break;
+                }
+            }
+            if (rankerFlag == -1){
+                simpleAddMarker(map, markerOptions, bikeLocation, bikeList.get(i).getBikeOwner(), "자전거 종류: " + bikeList.get(i).getBikeType());
+            }else{
+                rankerAddMarker(map, markerOptions, bikeLocation, rankerList.get(rankerFlag).getBikeOwner(), "자전거 종류: " + rankerList.get(rankerFlag).getBikeType());
+            }
         }
 
         LatLng SEOUL = new LatLng(37.506, 126.958);
@@ -266,6 +328,19 @@ public class Main2Activity extends AppCompatActivity
         markerOptions.position(pos);
         markerOptions.title(title);
         markerOptions.snippet(context);
+        map.addMarker(markerOptions);
+    }
+
+    private void rankerAddMarker(final GoogleMap map, MarkerOptions markerOptions, LatLng pos, String title, String context){
+        markerOptions.position(pos);
+        markerOptions.title(title);
+        markerOptions.snippet(context);
+
+        BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.ranker_star);
+        Bitmap b=bitmapdraw.getBitmap();
+        Bitmap smallMarker = Bitmap.createScaledBitmap(b, 100, 100, false);
+        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+
         map.addMarker(markerOptions);
     }
 
