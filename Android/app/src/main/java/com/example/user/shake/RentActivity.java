@@ -7,13 +7,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.example.user.shake.Request.CheckRequest;
+import com.example.user.shake.Request.GetRentBikeInfo;
+import com.example.user.shake.Request.GetValidTimeRequest;
 import com.example.user.shake.Request.RentRequest;
 
 import org.json.JSONObject;
@@ -22,6 +26,9 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class RentActivity extends AppCompatActivity {
+
+    TextView type,model,add_info,valid_time;
+    ImageView image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,11 +40,20 @@ public class RentActivity extends AppCompatActivity {
 
         final Intent intent = getIntent();
 
+        String bikecode=intent.getStringExtra("bikecode");
         final Button rentbtn = (Button) findViewById(R.id.rent_button);
-        final Button return_btn = (Button) findViewById(R.id.return_button);
+        //final Button return_btn = (Button) findViewById(R.id.return_button);
         final TextView explain = (TextView) findViewById(R.id.explain);
         final String borrower = info[0];
-        final String rentnumber_send;
+        type=findViewById(R.id.explain_bike_type);
+        model=findViewById(R.id.explain_bike_model);
+        add_info=findViewById(R.id.explain_bike_explain);
+        valid_time=findViewById(R.id.explain_bike_valid_time);
+        image=findViewById(R.id.imageView_rent);
+
+        //Test
+        Glide.with(this).load("http://13.125.229.179/bike.png").into(image);
+        Toast.makeText(getApplication(),"대여 가능시간을 확인해주세요",Toast.LENGTH_SHORT).show();
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
@@ -60,6 +76,70 @@ public class RentActivity extends AppCompatActivity {
         CheckRequest checkRequest = new CheckRequest(borrower, responseListener);
         RequestQueue queue = Volley.newRequestQueue(RentActivity.this);
         queue.add(checkRequest);
+
+        Response.Listener<String> responseListener1 = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try{
+                    JSONObject jsonResponse = new JSONObject(response);
+                    boolean success = jsonResponse.getBoolean("success");
+                    String biketype=jsonResponse.getString("bike_type");
+                    String modelname=jsonResponse.getString("model_name");
+                    String addInfo=jsonResponse.getString("addInfo");
+                    type.setText(biketype);
+                    model.setText(modelname);
+                    add_info.setText(addInfo);
+                    if(success){
+
+                    }
+                    else{
+                        //explain.setText("대여 중인 \n자전거가 있습니다");
+                    }
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        };
+        GetRentBikeInfo getRentBikeInfo = new GetRentBikeInfo(bikecode, responseListener1);
+        RequestQueue queue1 = Volley.newRequestQueue(RentActivity.this);
+        queue1.add(getRentBikeInfo);
+
+        Response.Listener<String> responseListener2 = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try{
+                    JSONObject jsonResponse = new JSONObject(response);
+                    boolean success = jsonResponse.getBoolean("success");
+                    String json_day_start=jsonResponse.getString("day_start");
+                    String json_day_end=jsonResponse.getString("day_end");
+                    String json_night_start=jsonResponse.getString("night_start");
+                    String json_night_end=jsonResponse.getString("night_end");
+                    int len_day = json_day_start.split(",").length;
+                    int len_night = json_night_start.split(",").length;
+                    String string_day = "<오전>\n"; String string_night = "<오후>\n";
+                    for(int i=0;i<len_day;i++){
+                        string_day+=json_day_start.split("\"")[2*i+1]+" ~ "+json_day_end.split("\"")[2*i+1]+"시\n";
+                    }
+                    for(int i=0;i<len_night;i++){
+                        string_night+=json_night_start.split("\"")[2*i+1]+" ~ "+json_night_end.split("\"")[2*i+1]+"시\n";
+                    }
+
+                    if(success){
+                        valid_time.setText(string_day+string_night);
+                    }
+                    else{
+                        //explain.setText("대여 중인 \n자전거가 있습니다");
+                    }
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        };
+        GetValidTimeRequest getValidTimeRequest = new GetValidTimeRequest(bikecode, responseListener2);
+        RequestQueue queue2 = Volley.newRequestQueue(RentActivity.this);
+        queue2.add(getValidTimeRequest);
 
 
         rentbtn.setOnClickListener(new View.OnClickListener() {
