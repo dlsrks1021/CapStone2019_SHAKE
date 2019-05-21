@@ -227,6 +227,10 @@ public class CameraActivity extends AppCompatActivity {
                                 uploadFile(uploadFilePath+""+uploadFileName);
                             }
                         }).start();
+                        Intent intent = new Intent(CameraActivity.this, ReviewActivity.class);
+                        intent.putExtra("userId", borrower);
+                        intent.putExtra("rentnumber", rentnumber);
+                        startActivity(intent);
                         finish();
                     } catch (Exception e) {
                         System.out.println(mCurrentPhotoPath);
