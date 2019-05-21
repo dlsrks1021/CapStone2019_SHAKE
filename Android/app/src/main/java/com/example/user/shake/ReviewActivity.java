@@ -11,6 +11,7 @@ import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.user.shake.Request.PhpRequest;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -23,6 +24,7 @@ public class ReviewActivity extends AppCompatActivity {
     ImageView reviewImage;
 
     float rating;
+    float totalRating = 0;
     String userId;
     String imageUrl;
     int rentnumber;
@@ -75,6 +77,11 @@ public class ReviewActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"내용을 입력해주세요!",Toast.LENGTH_SHORT).show();
                 }
                 else{
+                    String bikecode = PhpRequest.getBikecodeByRentnumber(rentnumber);
+                    int reviewCount = PhpRequest.getReviewCount(bikecode);
+                    totalRating = (PhpRequest.getBikeRating(bikecode) * reviewCount + rating) / (reviewCount + 1);
+                    PhpRequest.updateBikeRating(bikecode, totalRating);
+
                     PhpConnect task2 = new PhpConnect();
                     try {
                         task2.execute("http://13.125.229.179/insertReview.php?rentnumber="+Integer.toString(rentnumber)+"&contents="+review.getText().toString()+"&imageUrl="+imageUrl+"&rating="+Float.toString(rating)).get();
