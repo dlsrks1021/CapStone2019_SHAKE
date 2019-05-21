@@ -29,6 +29,8 @@ public class PhpRequest {
 
     public static float getBikeRating(String bikecode){
         ArrayList<String> sBikeRating = connect("http://13.125.229.179/getRating.php?bikecode="+bikecode);
+        if (sBikeRating.size() == 0)
+            return 0;
         float rating = Float.parseFloat(sBikeRating.get(0));
         return rating;
     }

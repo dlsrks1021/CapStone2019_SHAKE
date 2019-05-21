@@ -241,7 +241,7 @@ public class Main2Activity extends AppCompatActivity
                 gapLongitude *= 88.74;
                 distance = Math.sqrt(Math.pow(gapLatitude, 2) + Math.pow(gapLongitude, 2));
 
-                if (distance <= 5 && reviewCount >= 10){
+                if (distance <= 5 && reviewCount >= 1){
                     if (myRating < rating){
                         upRatingCount += 1;
                     }
@@ -249,7 +249,7 @@ public class Main2Activity extends AppCompatActivity
                 if (upRatingCount >= 3)
                     break;
             }
-            if (upRatingCount < 3 && myReviewCount >= 10){
+            if (upRatingCount < 3 && myReviewCount >= 1){
                 rankerList.add(bikeList.get(i));
             }
         }
