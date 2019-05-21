@@ -24,7 +24,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ReportMainAcitivity"></activity>
+        <activity android:name=".ReportOwnerActivity"></activity>
+        <activity android:name=".ReportMainAcitivity" />
         <activity android:name=".ReviewListActivity" />
         <activity android:name=".ReportActivity" />
         <activity android:name=".AdminMainActivity" />

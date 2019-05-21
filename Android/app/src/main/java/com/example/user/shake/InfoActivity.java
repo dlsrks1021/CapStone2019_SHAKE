@@ -4,13 +4,14 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.icu.text.IDNA;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -56,13 +57,14 @@ public class InfoActivity extends AppCompatActivity {
     private Button btnShowLocation;
     double latitude_dst,longitude_dst,latitude_src,longitude_src;
     Location location_dst,location_src;
+    String MAC_Address;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
 
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         userId = intent.getStringExtra("userId");
         String[] info = new String[2];
         info=((Main2Activity)Main2Activity.mContext).getInfo();
@@ -149,6 +151,7 @@ public class InfoActivity extends AppCompatActivity {
         TextView title = (TextView)findViewById(R.id.title_info);
         final TextView content = (TextView)findViewById(R.id.content_info);
         Button return_button = (Button) findViewById(R.id.return_button_info);
+        content.setText("X");
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
@@ -158,14 +161,18 @@ public class InfoActivity extends AppCompatActivity {
                     boolean success = jsonResponse.getBoolean("success");
                     double latitude = jsonResponse.getDouble("latitude");
                     double longitude = jsonResponse.getDouble("longitude");
+
                     if(success){
                         content.setText("X");
+                        //Toast.makeText(getApplication(),"TEST ok!",Toast.LENGTH_SHORT).show();
                     }
                     else{
                         content.setText("O");
                         location_src=new Location("");
                         latitude_src=latitude; longitude_src = longitude; location_src.setLatitude(latitude_src); location_src.setLongitude(longitude_src);
                         rentnumber=jsonResponse.getString("rentnumber");
+                        MAC_Address=jsonResponse.getString("mac_address");
+                        System.out.println(MAC_Address+"MAC ADDRESS");
                         rentBikeView.setVisibility(View.VISIBLE);
                         PhpConnect task = new PhpConnect();
                         try {
@@ -198,7 +205,7 @@ public class InfoActivity extends AppCompatActivity {
                             JSONObject jsonResponse = new JSONObject(response);
                             boolean success = jsonResponse.getBoolean("rent_success");
                             if(success){
-                                content.setText("대여 중인 자전거가 없습니다");
+                                content.setText("X");
                             }
                             else{
                                 AlertDialog.Builder builder = new AlertDialog.Builder(InfoActivity.this);
@@ -225,29 +232,26 @@ public class InfoActivity extends AppCompatActivity {
                     latitude_dst = gps.getLatitude();
                     longitude_dst = gps.getLongitude();
                     Log.v("gps","gps OK");
-                    /*Toast.makeText(getApplication(),String.valueOf(latitude_dst+"   "+longitude_dst),Toast.LENGTH_SHORT).show();
-                    Toast.makeText(
-                            getApplicationContext(),
-                            "당신의 위치 - \n위도: " + latitude_dst + "\n경도: " + longitude_dst,
-                            Toast.LENGTH_LONG).show();*/
                 } else {
                     // GPS 를 사용할수 없으므로
                     Log.v("gps", "gps Fail");
                     gps.showSettingsAlert();
                 }
-                if(!content.getText().equals("대여 중인 자전거가 없습니다")) {
+                if(!content.getText().equals("X")) {
                     location_dst=new Location("");
                     System.out.println(latitude_dst+"   "+longitude_dst+"   "+latitude_src+"   "+longitude_src);
                     location_dst.setLatitude(latitude_dst);
                     location_dst.setLongitude(longitude_dst);
                     float distance =location_dst.distanceTo(location_src);
-                    if(distance<1000){//To be implement
+                    if(distance<100000){//To be implement
                         long time = System.currentTimeMillis();
                         SimpleDateFormat dayTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                         String day = dayTime.format(new Date(time));
-                        //System.out.println("latitude= "+latitude_src+"   longitude= "+longitude_src);
-                        //Toast.makeText(getApplication(), "distance= "+distance, Toast.LENGTH_SHORT).show();
-                        ReturnRequest returnRequest = new ReturnRequest(getIntent().getStringExtra("userId"), Integer.parseInt(rentnumber),day, "http://13.125.229.179/testimage.php", 123, responseListener);
+                        Intent intent_test = new Intent(InfoActivity.this,CameraActivity.class);
+                        intent_test.putExtra("userID",userId);
+                        intent_test.putExtra("rentnumber",rentnumber);
+                        startActivityForResult(intent_test,10);
+                        ReturnRequest returnRequest = new ReturnRequest(getIntent().getStringExtra("userId"), Integer.parseInt(rentnumber),day, "http://13.125.229.179/"+userId+"_"+rentnumber+".jpg", 123, responseListener);
                         RequestQueue queue = Volley.newRequestQueue(InfoActivity.this);
                         queue.add(returnRequest);
                     }
@@ -330,6 +334,7 @@ public class InfoActivity extends AppCompatActivity {
 
     public void smart_key_clicked(View v){
         Intent intent2 = new Intent(InfoActivity.this, BluetoothActivity.class);
+        intent2.putExtra("MAC_Address",MAC_Address);
         InfoActivity.this.startActivity(intent2);
     }
 

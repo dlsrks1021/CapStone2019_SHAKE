@@ -56,6 +56,7 @@ public class CameraActivity extends AppCompatActivity {
     String upLoadServerUri = "http://13.125.229.179/UploadToServer.php";
     String uploadFilePath,uploadFileName;
     int serverResponseCode = 0;
+    String rentnumber,borrower;
 
     int captureCount=0;
 
@@ -63,6 +64,9 @@ public class CameraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
+        final Intent intent = getIntent();
+        borrower=intent.getStringExtra("userID");
+        rentnumber=intent.getStringExtra("rentnumber");
 
         permission = new PermissionCheck(CameraActivity.this);
 
@@ -91,12 +95,13 @@ public class CameraActivity extends AppCompatActivity {
             captureCamera();
         }
         else if(captureCount<10){
-            android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(CameraActivity.this);
+            /*android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(CameraActivity.this);
             builder.setMessage("최대 10장까지 촬영이 가능합니다.\n계속 촬영하실건가요?")
                     .setPositiveButton("Yes",null)
                     .setNegativeButton("No",null)
                     .create()
-                    .show();
+                    .show();*/
+            finish();
         }
     }
 
@@ -138,7 +143,8 @@ public class CameraActivity extends AppCompatActivity {
     public File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + ".jpg";
+        String imageFileName = borrower+"_"+rentnumber+".jpg";
+        //String imageFileName = "JPEG_" + timeStamp + ".jpg";
         File imageFile = null;
         File storageDir = new File(Environment.getExternalStorageDirectory() + "/Pictures", "gyeom");
 
@@ -206,9 +212,10 @@ public class CameraActivity extends AppCompatActivity {
                         // iv_view.setImageURI(imageUri);
                         //Test
                         uploadFilePath=mCurrentPhotoPath.substring(0,35);
+                        //uploadFileName=borrower+"_"+rentnumber+".jpg";
                         uploadFileName=mCurrentPhotoPath.substring(35);
                         System.out.println(uploadFilePath+" // "+uploadFileName);
-                        dialog = ProgressDialog.show(CameraActivity.this, "", "Uploading file...", true);
+                        //dialog = ProgressDialog.show(CameraActivity.this, "", "Uploading file...", true);
 
                         new Thread(new Runnable() {
                             public void run() {
@@ -220,6 +227,7 @@ public class CameraActivity extends AppCompatActivity {
                                 uploadFile(uploadFilePath+""+uploadFileName);
                             }
                         }).start();
+                        finish();
                     } catch (Exception e) {
                         System.out.println(mCurrentPhotoPath);
                         Log.e("REQUEST_TAKE_PHOTO", e.toString());
@@ -360,7 +368,7 @@ public class CameraActivity extends AppCompatActivity {
                 Log.e("Upload file to server Exception", "Exception : "
                         + e.getMessage(), e);
             }
-            dialog.dismiss();
+            //dialog.dismiss();
             return serverResponseCode;
         } // End else block
     }
@@ -412,4 +420,5 @@ public class CameraActivity extends AppCompatActivity {
                 break;
         }
     }
+
 }

@@ -6,13 +6,13 @@
 
     <Button
         android:id="@+id/btn_capture"
-        android:layout_width="21dp"
+        android:layout_width="364dp"
         android:layout_height="wrap_content"
         android:text="사진찍기" />
 
     <Button
         android:id="@+id/btn_album"
-        android:layout_width="21dp"
+        android:layout_width="358dp"
         android:layout_height="wrap_content"
         android:text="앨범열기" />
     <ImageView

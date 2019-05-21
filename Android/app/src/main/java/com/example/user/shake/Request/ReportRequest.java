@@ -19,9 +19,6 @@ public class ReportRequest extends StringRequest {
         parameters.put("imageurl",return_image_url);
         parameters.put("report_content",contents);
     }
-
-
-
     @Override
     public Map<String, String> getParams(){
         return parameters;

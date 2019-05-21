@@ -1,47 +1,34 @@
 package com.example.user.shake;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.bumptech.glide.Glide;
-import com.example.user.shake.Request.CheckRequest;
-import com.example.user.shake.Request.RentInfoRequest;
+import com.example.user.shake.Request.GetRentLogInfo;
 
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
-public class ReportActivity extends AppCompatActivity {
-
+public class ReportOwnerActivity extends AppCompatActivity {
     private TextView explain;
     public String json_rentnumber,json_bikecode,json_rent_time;
     Intent intent_main;
 
     static String imgUrl = "http://13.125.229.179/JPEG_20190512_201100.jpg";
-    String borrower;
+    String owner;
 
     ArrayList<String> rentnumber,bikecode,rent_time;
     ArrayList<String> Title,Context,img_url;
+    ArrayList<Integer> img;
 
     //Test
     ArrayList<ListVO> list_itemArrayList;
@@ -51,12 +38,13 @@ public class ReportActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_report);
+        setContentView(R.layout.activity_report_owner);
         Toast.makeText(getApplication(),"신고하고자 하는 항목을 선택하세요",Toast.LENGTH_SHORT).show();
-        listview=(ListView)findViewById(R.id.listview_report);
+        listview=(ListView)findViewById(R.id.listview_owner_report);
         list_itemArrayList=new ArrayList<>();
         intent_main = getIntent();
-        borrower=intent_main.getStringExtra("userId");
+        owner=intent_main.getStringExtra("userId");
+        //System.out.println("Owner = "+owner);
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
@@ -66,7 +54,7 @@ public class ReportActivity extends AppCompatActivity {
                     json_rentnumber=jsonResponse.getString("rentnumber");
                     json_bikecode = jsonResponse.getString("bikecode");
                     json_rent_time = jsonResponse.getString("rent_time");
-                    //System.out.println(json_rentnumber.split("\"")[1]+"      "+json_rentnumber.split("\"")[3]);
+                    System.out.println(json_rentnumber+"   "+json_bikecode+"   "+json_rent_time);
                     rentnumber=new ArrayList<>(); img_url=new ArrayList<>();
                     // bikecode=new ArrayList<>(); rent_time=new ArrayList<>();
                     //Title=new ArrayList<>(); Context=new ArrayList<>(); img=new ArrayList<>();
@@ -76,11 +64,11 @@ public class ReportActivity extends AppCompatActivity {
                         rentnumber.add(json_rentnumber.split("\"")[2*i+1]);
                         list_itemArrayList.add(new ListVO("http://13.125.229.179/JPEG_20190512_201100.jpg",json_bikecode.split("\"")[2*i+1],json_rent_time.split("\"")[2*i+1]));
                     }
-                    final Intent intent = new Intent(ReportActivity.this,ReportMainAcitivity.class);
+                    final Intent intent = new Intent(ReportOwnerActivity.this,ReportMainAcitivity.class);
 
                     //변수 초기화
-                    adapter = new ReportViewAdapter(ReportActivity.this,list_itemArrayList);
-                    listview = (ListView) findViewById(R.id.listview_report);
+                    adapter = new ReportViewAdapter(ReportOwnerActivity.this,list_itemArrayList);
+                    listview = (ListView) findViewById(R.id.listview_owner_report);
 
                     //어뎁터 할당
                     listview.setAdapter(adapter);
@@ -88,8 +76,8 @@ public class ReportActivity extends AppCompatActivity {
                     listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Toast.makeText(ReportActivity.this,list_itemArrayList.get(position).getTitle(),Toast.LENGTH_SHORT).show();
-                            intent.putExtra("img_url","http://13.125.229.179/JPEG_20190512_201100.jpg");
+                            Toast.makeText(ReportOwnerActivity.this,list_itemArrayList.get(position).getTitle(),Toast.LENGTH_SHORT).show();
+                            intent.putExtra("img_url","http://13.125.229.179/test_18.jpg");
                             intent.putExtra("borrower",intent_main.getStringExtra("userId"));
                             intent.putExtra("bikecode",list_itemArrayList.get(position).getTitle());
                             intent.putExtra("renttime",list_itemArrayList.get(position).getContext());
@@ -103,8 +91,9 @@ public class ReportActivity extends AppCompatActivity {
                 }
             }
         };
-        RentInfoRequest rentInfoRequest = new RentInfoRequest(borrower, responseListener);
-        RequestQueue queue = Volley.newRequestQueue(ReportActivity.this);
-        queue.add(rentInfoRequest);
+        GetRentLogInfo getRentLogInfo = new GetRentLogInfo(owner, responseListener);
+        RequestQueue queue = Volley.newRequestQueue(ReportOwnerActivity.this);
+        queue.add(getRentLogInfo);
     }
 }
+

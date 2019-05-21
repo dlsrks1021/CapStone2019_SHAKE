@@ -3,6 +3,7 @@ package com.example.user.shake;
 import android.Manifest;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -140,8 +142,27 @@ public class Main2Activity extends AppCompatActivity
 
 
         if (id == R.id.itemRent) {
-            Intent intent = new Intent(Main2Activity.this, ReportActivity.class);
-            Main2Activity.this.startActivity(intent);
+            AlertDialog.Builder builder = new AlertDialog.Builder(Main2Activity.this);
+            builder.setMessage("신고할 항목을 선택하세요")
+                    .setNegativeButton("대여 기록", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent2 = new Intent(Main2Activity.this, ReportActivity.class);
+                            intent2.putExtra("userId", userID);
+                            Main2Activity.this.startActivity(intent2);
+                        }
+                    })
+                    .setPositiveButton("공유 기록", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent2 = new Intent(Main2Activity.this, ReportOwnerActivity.class);
+                            intent2.putExtra("userId", userID);
+                            Main2Activity.this.startActivity(intent2);
+                        }
+                    })
+                    .create()
+                    .show();
+            //Main2Activity.this.startActivity(intent2);
         } else if (id == R.id.itemRegister) {
             Intent intent2 = new Intent(Main2Activity.this, BikeRegisterActivity.class);
             intent2.putExtra("userId", userID);
@@ -169,6 +190,7 @@ public class Main2Activity extends AppCompatActivity
         }
         else if (id == R.id.itemReviewList){
             Intent intent2 = new Intent(Main2Activity.this, ReviewListActivity.class);
+            intent2.putExtra("userId", userID);
             Main2Activity.this.startActivity(intent2);
         }
 

@@ -33,7 +33,7 @@
         android:ems="10"
         android:gravity="top"
         android:hint="신고 사유를 적어주세요."
-        android:inputType="textPersonName"
+        android:inputType="textMultiLine"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
