@@ -6,7 +6,7 @@ public class BikeInfo implements Serializable {
 
     private String bikeOwner, bikeCode, bikeImgUrl, bikeLockId, bikeModelName, bikeType, bikeAddInfo;
     private double bikeLatitude, bikeLongitude;
-    private int bikeCost;
+    private int bikeCost, bike_review_count;
     private float bikeRating;
 
     public BikeInfo(String bikeOwner, String bikeCode, double bikeLatitude
@@ -22,6 +22,14 @@ public class BikeInfo implements Serializable {
         this.bikeModelName = bikeModelName;
         this.bikeType = bikeType;
         this.bikeAddInfo = bikeAddInfo;
+    }
+
+    public int getBike_review_count() {
+        return bike_review_count;
+    }
+
+    public void setBikeReviewCount(int bike_review_count) {
+        this.bike_review_count = bike_review_count;
     }
 
     public float getBikeRating() {
