@@ -218,21 +218,31 @@ public class Main2Activity extends AppCompatActivity
     }
 
     private void findRanker(){
-        for (int i = 0; i < bikeList.size(); ++i){
-            float myRating = PhpRequest.getBikeRating(bikeList.get(i).getBikeCode());
-            int upRatingCount = 0;
-            int myReviewCount = PhpRequest.getReviewCount(bikeList.get(i).getBikeCode());
 
+        ArrayList<Float> ratingList = new ArrayList<>();
+
+        for (int i = 0; i < bikeList.size(); ++i){
+            ratingList.add(PhpRequest.getBikeRating(bikeList.get(i).getBikeCode()));
+        }
+
+        for (int i = 0; i < bikeList.size(); ++i){
+            float myRating =  ratingList.get(i);
+            int upRatingCount = 0;
+            int myReviewCount = bikeList.get(i).getBike_review_count();
+
+            if (myRating == 0 || myReviewCount == 0){
+                continue;
+            }
             for (int j = 0; j < bikeList.size(); ++j){
                 float rating = 0;
                 double gapLatitude, gapLongitude, distance;
-                int reviewCount = PhpRequest.getReviewCount(bikeList.get(j).getBikeCode());
+                int reviewCount = bikeList.get(j).getBike_review_count();
 
                 if (i == j)
                     continue;
 
 
-                rating = PhpRequest.getBikeRating(bikeList.get(j).getBikeCode());
+                rating = ratingList.get(j);
 
                 gapLatitude = bikeList.get(i).getBikeLatitude() - bikeList.get(j).getBikeLatitude();
                 gapLongitude = bikeList.get(i).getBikeLongitude() - bikeList.get(j).getBikeLongitude();
@@ -241,15 +251,15 @@ public class Main2Activity extends AppCompatActivity
                 gapLongitude *= 88.74;
                 distance = Math.sqrt(Math.pow(gapLatitude, 2) + Math.pow(gapLongitude, 2));
 
-                if (distance <= 5 && reviewCount >= 1){
+                if (distance <= 3 && reviewCount >= 1){
                     if (myRating < rating){
                         upRatingCount += 1;
                     }
                 }
-                if (upRatingCount >= 3)
+                if (upRatingCount >= 1)
                     break;
             }
-            if (upRatingCount < 3 && myReviewCount >= 1){
+            if (upRatingCount < 1 && myReviewCount >= 1){
                 rankerList.add(bikeList.get(i));
             }
         }
@@ -262,7 +272,7 @@ public class Main2Activity extends AppCompatActivity
         ArrayList<String> bikeLatLng = new ArrayList<>();
         bikeList = new ArrayList<>();
         MarkerOptions markerOptions = new MarkerOptions();
-        int bikeCost = 0;
+        int bikeCost = 0, bike_review_count = 0;
         double bikeLatitude = 0, bikeLongitude = 0;
         String bikeOwner = "", bikeType = "", bikeImgUrl = "", bikeCode = "";
         String bikeLockId = "", bikeModelName = "", bikeAddInfo = "";
@@ -280,7 +290,7 @@ public class Main2Activity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        for (int i = 0; i < bikeLatLng.size(); i += 11){
+        for (int i = 0; i < bikeLatLng.size(); i += 12){
             bikeOwner = bikeLatLng.get(i);
             bikeCode = bikeLatLng.get(i + 1);
             bikeLatitude = Double.parseDouble(bikeLatLng.get(i + 2));
@@ -292,9 +302,11 @@ public class Main2Activity extends AppCompatActivity
             bikeType = bikeLatLng.get(i + 8);
             bikeAddInfo = bikeLatLng.get(i + 9);
             bikeRating = Float.parseFloat(bikeLatLng.get(i + 10));
+            bike_review_count = Integer.parseInt(bikeLatLng.get(i + 11));
 
             BikeInfo bike = new BikeInfo(bikeOwner, bikeCode, bikeLatitude, bikeLongitude, bikeCost, bikeImgUrl, bikeLockId, bikeModelName, bikeType, bikeAddInfo);
             bike.setBikeRating(bikeRating);
+            bike.setBikeReviewCount(bike_review_count);
             bikeList.add(bike);
         }
         rankerList = new ArrayList<>();
