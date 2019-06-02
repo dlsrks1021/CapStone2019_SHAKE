@@ -81,6 +81,7 @@ public class ReviewActivity extends AppCompatActivity {
                     int reviewCount = PhpRequest.getReviewCount(bikecode);
                     totalRating = (PhpRequest.getBikeRating(bikecode) * reviewCount + rating) / (reviewCount + 1);
                     PhpRequest.updateBikeRating(bikecode, totalRating);
+                    PhpRequest.updateBikeReviewCount(bikecode);
 
                     PhpConnect task2 = new PhpConnect();
                     try {

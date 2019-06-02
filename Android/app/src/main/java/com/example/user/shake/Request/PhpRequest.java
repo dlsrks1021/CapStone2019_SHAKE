@@ -23,7 +23,7 @@ public class PhpRequest {
     public static int getReviewCount(String bikecode){
         int count = 0;
         ArrayList<String> reviewList = connect("http://13.125.229.179/getReviewCount.php?bikecode="+bikecode);
-        count = reviewList.size();
+        count = Integer.parseInt(reviewList.get(0));
         return count;
     }
 
@@ -42,5 +42,9 @@ public class PhpRequest {
 
     public static void updateBikeRating(String bikecode, float rating){
         connect("http://13.125.229.179/updateBikeRating.php?bikecode="+bikecode+"?rating="+rating);
+    }
+
+    public static void updateBikeReviewCount(String bikecode){
+        connect("http://13.125.229.179/updateBikeReviewCount.php?bikecode="+bikecode);
     }
 }
