@@ -24,7 +24,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".MyBikeInfoActivity"></activity>
+        <activity android:name=".CategoryActivity"></activity>
+        <activity android:name=".MyBikeInfoActivity" />
         <activity android:name=".ReportOwnerActivity" />
         <activity android:name=".ReportMainAcitivity" />
         <activity android:name=".ReviewListActivity" />
