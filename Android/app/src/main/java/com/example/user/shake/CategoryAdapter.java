@@ -35,10 +35,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ItemVi
     // View 의 내용을 해당 포지션의 데이터로 바꿉니다.
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-        holder.nameView.setText(mItems.get(position).getName());
-        holder.dateView.setText(mItems.get(position).getDate().toString());
-        holder.ownerBikeView.setText(mItems.get(position).getOwner()+"'s "+mItems.get(position).getBike());
-        holder.contentView.setText(mItems.get(position).getContent());
+        holder.textView.setText(mItems.get(position).getName()+"\n"+mItems.get(position).getDistance()+"\n"+mItems.get(position).getPrice()+"원");
         holder.ratingBar.setRating(mItems.get(position).getRating());
         if (mItems.get(position).getImageUrl().contains("http")) {
             Glide.with(context).load(mItems.get(position).getImageUrl()).into(holder.bikeImage);
@@ -54,18 +51,15 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ItemVi
     // 커스텀 뷰홀더
 // item layout 에 존재하는 위젯들을 바인딩합니다.
     class ItemViewHolder extends RecyclerView.ViewHolder{
-        private TextView nameView, dateView, ownerBikeView, contentView;
+        private TextView textView;
         private RatingBar ratingBar;
         private ImageView bikeImage;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
-            nameView = itemView.findViewById(R.id.recyclerNameView);
-            dateView = itemView.findViewById(R.id.recyclerDateView);
-            ownerBikeView = itemView.findViewById(R.id.recyclerOwnerBikeView);
-            contentView = itemView.findViewById(R.id.recyclerContentView);
-            ratingBar = itemView.findViewById(R.id.recyclerRatingBar);
-            bikeImage = itemView.findViewById(R.id.recyclerBikeImage);
+            textView = itemView.findViewById(R.id.category_textview);
+            ratingBar = itemView.findViewById(R.id.category_ratingBar);
+            bikeImage = itemView.findViewById(R.id.category_bike_image);
 
         }
     }

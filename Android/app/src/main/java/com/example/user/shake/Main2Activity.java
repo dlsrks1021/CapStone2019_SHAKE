@@ -204,6 +204,10 @@ public class Main2Activity extends AppCompatActivity
             intent2.putExtra("userId", userID);
             Main2Activity.this.startActivity(intent2);
         }
+        else if (id == R.id.itemCategory){
+            Intent intent2 = new Intent(Main2Activity.this, CategoryActivity.class);
+            Main2Activity.this.startActivity(intent2);
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
