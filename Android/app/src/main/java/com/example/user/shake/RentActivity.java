@@ -2,13 +2,17 @@ package com.example.user.shake;
 
 import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
+import android.os.Build;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -22,13 +26,21 @@ import com.example.user.shake.Request.RentRequest;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
 public class RentActivity extends AppCompatActivity {
 
-    TextView type,model,add_info,valid_time;
+    TextView type,model,add_info,valid_time,select_time,select_cost;
     ImageView image;
+    int select_renttime=0;
+    int insurance=0; int allow=0;
+    int cost;
+    TimePicker tp;
+    static String day;
+    String json_day_start,json_day_end,json_night_start,json_night_end;
+    ArrayList<Integer> validtime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +49,15 @@ public class RentActivity extends AppCompatActivity {
 
         String[] info = new String[2];
         info=((Main2Activity)Main2Activity.mContext).getInfo();
-
+        validtime=new ArrayList<>();
+        tp=(TimePicker)findViewById(R.id.tp);
+        Calendar tp_time=Calendar.getInstance();
         final Intent intent = getIntent();
 
         String bikecode=intent.getStringExtra("bikecode");
         final Button rentbtn = (Button) findViewById(R.id.rent_button);
+        select_time=(TextView)findViewById(R.id.explain10);
+        select_cost=(TextView)findViewById(R.id.explain_bike_model2);
         //final Button return_btn = (Button) findViewById(R.id.return_button);
         final TextView explain = (TextView) findViewById(R.id.explain);
         final String borrower = info[0];
@@ -86,6 +102,7 @@ public class RentActivity extends AppCompatActivity {
                     String biketype=jsonResponse.getString("bike_type");
                     String modelname=jsonResponse.getString("model_name");
                     String addInfo=jsonResponse.getString("addInfo");
+                    cost=jsonResponse.getInt("cost");
                     type.setText(biketype);
                     model.setText(modelname);
                     add_info.setText(addInfo);
@@ -111,18 +128,22 @@ public class RentActivity extends AppCompatActivity {
                 try{
                     JSONObject jsonResponse = new JSONObject(response);
                     boolean success = jsonResponse.getBoolean("success");
-                    String json_day_start=jsonResponse.getString("day_start");
-                    String json_day_end=jsonResponse.getString("day_end");
-                    String json_night_start=jsonResponse.getString("night_start");
-                    String json_night_end=jsonResponse.getString("night_end");
+                    json_day_start=jsonResponse.getString("day_start");
+                    json_day_end=jsonResponse.getString("day_end");
+                    json_night_start=jsonResponse.getString("night_start");
+                    json_night_end=jsonResponse.getString("night_end");
                     int len_day = json_day_start.split(",").length;
                     int len_night = json_night_start.split(",").length;
                     String string_day = "<오전>\n"; String string_night = "<오후>\n";
                     for(int i=0;i<len_day;i++){
                         string_day+=json_day_start.split("\"")[2*i+1]+" ~ "+json_day_end.split("\"")[2*i+1]+"시\n";
+                        validtime.add(Integer.parseInt(json_day_start.split("\"")[2*i+1]));
+                        validtime.add(Integer.parseInt(json_day_end.split("\"")[2*i+1]));
                     }
                     for(int i=0;i<len_night;i++){
                         string_night+=json_night_start.split("\"")[2*i+1]+" ~ "+json_night_end.split("\"")[2*i+1]+"시\n";
+                        validtime.add(Integer.parseInt(json_night_start.split("\"")[2*i+1])+12);
+                        validtime.add(Integer.parseInt(json_night_end.split("\"")[2*i+1])+12);
                     }
 
                     if(success){
@@ -145,7 +166,6 @@ public class RentActivity extends AppCompatActivity {
         rentbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Response.Listener<String> responseListener = new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -154,11 +174,10 @@ public class RentActivity extends AppCompatActivity {
                             boolean success = jsonResponse.getBoolean("success");
                             if(success){
                                 explain.setText("대여 중인 \n자전거가 있습니다");
-                                Intent intent = new Intent(RentActivity.this, InfoActivity.class);
+                                /*Intent intent = new Intent(RentActivity.this, InfoActivity.class);
                                 String rentnumber = jsonResponse.getString("rentnumber");
                                 intent.putExtra("rentnumber",rentnumber);
-                                finish();
-
+                                finish();*/
                             }
                             else{
                                 AlertDialog.Builder builder = new AlertDialog.Builder(RentActivity.this);
@@ -174,21 +193,109 @@ public class RentActivity extends AppCompatActivity {
                     }
                 };
                 if(!explain.getText().equals("대여 중인 \n자전거가 있습니다")) {
+                    int hour,min;
+                    int execute_flag=0;
+                    if(Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.M){
+                        hour=tp.getHour();
+                        min=tp.getMinute();
+                    }else{
+                        hour=tp.getCurrentHour();
+                        min=tp.getCurrentMinute();
+                    }
                     long time = System.currentTimeMillis();
-                    SimpleDateFormat dayTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                    String day = dayTime.format(new Date(time));
-                    Date date = new Date();
-                    Calendar cal = Calendar.getInstance(); cal.setTime(date); // 10분 더하기
-                    cal.add(Calendar.HOUR, 1);//return 할때 몇시간 빌리는지 넣어주면 됨
+                    SimpleDateFormat dayTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    day = dayTime.format(new Date(time));
+                    String save_day=day;
+                    day=day.split(" ")[0]+" "+hour+":"+min+":00";
+                    Calendar cal = Calendar.getInstance();
+                    cal.set(Calendar.YEAR,Integer.parseInt(day.split(" ")[0].split("-")[0]));
+                    cal.set(Calendar.MONTH,Integer.parseInt(day.split(" ")[0].split("-")[1])-1);
+                    cal.set(Calendar.DATE,Integer.parseInt(day.split(" ")[0].split("-")[2]));
+                    cal.set(Calendar.HOUR_OF_DAY,Integer.parseInt(day.split(" ")[1].split(":")[0]));
+                    cal.set(Calendar.MINUTE,Integer.parseInt(day.split(" ")[1].split(":")[1]));
+                    cal.set(Calendar.SECOND,Integer.parseInt(day.split(" ")[1].split(":")[2]));
+
+                    cal.add(Calendar.HOUR_OF_DAY, select_renttime);//return 할때 몇시간 빌리는지 넣어주면 됨
                     String return_time = dayTime.format(cal.getTime()); //System.out.println(day+"      "+ return_time);
-                    RentRequest rentRequest = new RentRequest(intent.getStringExtra("bikecode"), intent.getStringExtra("borrower"), day, return_time, 0, 0, responseListener);
-                    RequestQueue queue = Volley.newRequestQueue(RentActivity.this);
-                    queue.add(rentRequest);
+                    if(hour>Integer.parseInt(save_day.split(" ")[1].split(":")[0])||(hour==Integer.parseInt(save_day.split(" ")[1].split(":")[0])&&min>=Integer.parseInt(save_day.split(" ")[1].split(":")[1]))){
+                        execute_flag=1; //현재 시간보다 뒤인지 확인
+                    }
+                    for(int i=0;i<validtime.size();i++){
+                        if(Integer.parseInt(day.split(" ")[1].split(":")[0])>=validtime.get(2*i)&&
+                                ((Integer.parseInt(return_time.split(" ")[1].split(":")[0])<=validtime.get(2*i+1)&&Integer.parseInt(return_time.split(" ")[1].split(":")[1])==0)||
+                                        Integer.parseInt(day.split(" ")[0].split("-")[2])<Integer.parseInt(return_time.split(" ")[0].split("-")[2]))){
+                            execute_flag=1;
+                        }
+                        else{
+                            execute_flag=0;
+                        }
+                    }
+                    if(validtime.size()==0)execute_flag=0;
+
+                    if(execute_flag==1) {
+                        RentRequest rentRequest = new RentRequest(intent.getStringExtra("bikecode"), intent.getStringExtra("borrower"), day, return_time, allow, insurance, responseListener);
+                        RequestQueue queue = Volley.newRequestQueue(RentActivity.this);
+                        queue.add(rentRequest);
+                    }
+                    else{
+                        System.out.println(return_time);
+                        Toast.makeText(getApplication(),"대여 가능시간을 확인 해주세요",Toast.LENGTH_SHORT).show();
+                    }
                 }
                 else{
-                    Toast.makeText(getApplicationContext(),"대여 중인 자전거가 있습니다",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplication(),"대여 중인 자전거가 있습니다",Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+
+    public void plusClicked_rent(View v){
+        if(select_renttime<20){
+            select_renttime+=1;
+            select_time.setText(String.valueOf(select_renttime));
+            select_cost.setText(select_renttime*cost+" 원");
+        }
+        else{
+            Toast.makeText(getApplication(),"최대 대여시간은 20시간입니다",Toast.LENGTH_SHORT).show();
+        }
+    }
+    public void minusClicked_rent(View v){
+        if(select_renttime>0){
+            select_renttime-=1;
+            select_time.setText(String.valueOf(select_renttime));
+            select_cost.setText(select_renttime*cost+" 원");
+        }
+        else{
+            ;
+        }
+    }
+    public void validClicked(View v){
+        show();
+    }
+    void show()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle("대여 가능 시간");
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_validtime, null);
+        builder.setView(view);
+        TextView validtime_dialog=(TextView)view.findViewById(R.id.textView26);
+        int len_day = json_day_start.split(",").length;
+        int len_night = json_night_start.split(",").length;
+        String string_day = "<오전>\n"; String string_night = "<오후>\n";
+        for(int i=0;i<len_day;i++){
+            string_day+=json_day_start.split("\"")[2*i+1]+" ~ "+json_day_end.split("\"")[2*i+1]+"시\n";
+        }
+        for(int i=0;i<len_night;i++){
+            string_night+=json_night_start.split("\"")[2*i+1]+" ~ "+json_night_end.split("\"")[2*i+1]+"시\n";
+        }
+        validtime_dialog.setText(string_day+string_night);
+        final AlertDialog dialog = builder.create();
+        WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+        params.width=370;
+        params.height=420;
+        dialog.getWindow().setAttributes(params);
+        dialog.show();
+
     }
 }

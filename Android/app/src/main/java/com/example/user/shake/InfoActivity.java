@@ -58,6 +58,7 @@ public class InfoActivity extends AppCompatActivity {
     double latitude_dst,longitude_dst,latitude_src,longitude_src;
     Location location_dst,location_src;
     String MAC_Address;
+    TextView content;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,7 +150,7 @@ public class InfoActivity extends AppCompatActivity {
         //Test end
 
         TextView title = (TextView)findViewById(R.id.title_info);
-        final TextView content = (TextView)findViewById(R.id.content_info);
+        content = (TextView)findViewById(R.id.content_info);
         Button return_button = (Button) findViewById(R.id.return_button_info);
         content.setText("X");
 
@@ -259,7 +260,7 @@ public class InfoActivity extends AppCompatActivity {
                     location_dst.setLatitude(latitude_dst);
                     location_dst.setLongitude(longitude_dst);
                     float distance =location_dst.distanceTo(location_src);
-                    if(distance<100000){//To be implement
+                    if(distance<1000){//To be implement
                         long time = System.currentTimeMillis();
                         SimpleDateFormat dayTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                         String day = dayTime.format(new Date(time));
@@ -349,9 +350,14 @@ public class InfoActivity extends AppCompatActivity {
     }
 
     public void smart_key_clicked(View v){
-        Intent intent2 = new Intent(InfoActivity.this, BluetoothActivity.class);
-        intent2.putExtra("MAC_Address",MAC_Address);
-        InfoActivity.this.startActivity(intent2);
+        if(!content.getText().equals("X")) {
+            Intent intent2 = new Intent(InfoActivity.this, BluetoothActivity.class);
+            intent2.putExtra("MAC_Address", MAC_Address);
+            InfoActivity.this.startActivity(intent2);
+        }
+        else{
+            Toast.makeText(getApplication(),"대여 중인 자전거가 없습니다",Toast.LENGTH_SHORT).show();
+        }
     }
 
 //Test end
