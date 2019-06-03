@@ -229,7 +229,7 @@ public class CameraActivity extends AppCompatActivity {
                         }).start();
                         Intent intent = new Intent(CameraActivity.this, ReviewActivity.class);
                         intent.putExtra("userId", borrower);
-                        intent.putExtra("rentnumber", rentnumber);
+                        intent.putExtra("rentnumber", Integer.parseInt(rentnumber));
                         startActivity(intent);
                         finish();
                     } catch (Exception e) {

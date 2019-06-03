@@ -37,7 +37,6 @@ public class ReviewActivity extends AppCompatActivity {
         Intent intent = getIntent();
         userId = intent.getStringExtra("userId");
         rentnumber = intent.getIntExtra("rentnumber", -1);
-        //rentnumber = 1;
         ratingBar = findViewById(R.id.reviewRatingBar);
         review = findViewById(R.id.reviewEdit);
         submitButton = findViewById(R.id.reviewSubmitButton);
