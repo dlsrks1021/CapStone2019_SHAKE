@@ -22,6 +22,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 import com.example.user.shake.Request.CheckRequest;
+import com.example.user.shake.Request.GetMyPointRequest;
 import com.example.user.shake.Request.ReturnRequest;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
@@ -160,7 +161,6 @@ public class InfoActivity extends AppCompatActivity {
                     boolean success = jsonResponse.getBoolean("success");
                     double latitude = jsonResponse.getDouble("latitude");
                     double longitude = jsonResponse.getDouble("longitude");
-
                     if(success){
                         content.setText("X");
                         //Toast.makeText(getApplication(),"TEST ok!",Toast.LENGTH_SHORT).show();
@@ -192,6 +192,23 @@ public class InfoActivity extends AppCompatActivity {
         CheckRequest checkRequest = new CheckRequest(borrower, responseListener);
         RequestQueue queue = Volley.newRequestQueue(InfoActivity.this);
         queue.add(checkRequest);
+
+        Response.Listener<String> responseListener5 = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try{
+                    JSONObject jsonResponse = new JSONObject(response);
+                    pointView.setText(jsonResponse.getInt("point")+ " P");
+                    //System.out.println("TESTPOINT"+jsonResponse.getInt("point")+ " P");
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        };
+        GetMyPointRequest getMyPointRequest = new GetMyPointRequest(borrower, responseListener5);
+        RequestQueue queue5 = Volley.newRequestQueue(InfoActivity.this);
+        queue5.add(getMyPointRequest);
 
         return_button.setOnClickListener(new View.OnClickListener() {
             @Override

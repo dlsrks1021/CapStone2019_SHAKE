@@ -24,10 +24,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".PointMainActivity"></activity>
+        <activity android:name=".AdminChargeActivity"></activity>
+        <activity android:name=".AdminReportActivity" />
+        <activity android:name=".PointAdminActivity" />
+        <activity android:name=".PointMainActivity" />
         <activity android:name=".PointActivity" />
         <activity android:name=".TermsActivity" />
-        <activity android:name=".CategoryActivity"></activity>
+        <activity android:name=".CategoryActivity" />
         <activity android:name=".MyBikeInfoActivity" />
         <activity android:name=".ReportOwnerActivity" />
         <activity android:name=".ReportMainAcitivity" />
