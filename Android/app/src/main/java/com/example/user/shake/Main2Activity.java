@@ -339,8 +339,16 @@ public class Main2Activity extends AppCompatActivity
             }
         }
 
+        GpsInfo gpsInfo = new GpsInfo(getApplicationContext());
+
+        LatLng myLocation = new LatLng(gpsInfo.getLatitude(), gpsInfo.getLongitude());
+        userAddMarker(map, myLocation);
+
         LatLng SEOUL = new LatLng(37.506, 126.958);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(SEOUL));
+        if (myLocation.latitude > 30 && myLocation.latitude < 50 && myLocation.longitude < 150 && myLocation.longitude > 100)
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
+        else
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(SEOUL));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
 
 
@@ -365,6 +373,19 @@ public class Main2Activity extends AppCompatActivity
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
 
         map.addMarker(markerOptions);
+    }
+
+    private void userAddMarker(final GoogleMap map, LatLng pos){
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(pos);
+
+        BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.person_icon);
+        Bitmap b=bitmapdraw.getBitmap();
+        Bitmap smallMarker = Bitmap.createScaledBitmap(b, 100, 100, false);
+        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+
+        map.addMarker(markerOptions);
+
     }
 
     @Override
