@@ -499,36 +499,44 @@ public class BikeRegisterActivity extends AppCompatActivity {
                 Intent intent = getIntent();
                 String owner = intent.getStringExtra("userId");
                 String sCost = cost.getText().toString();
-                String imageurl = "not implemented yet";
+                String imageurl = "";
                 String sLockId = lockId.getText().toString();
                 String sModel = model.getText().toString();
                 int iType = type.getSelectedItemPosition();
                 String sType = "";
+                String tType="";
 
                 switch (iType){
                     case 0:
                         sType = "로드자전거";
+                        tType="Road";
                         break;
                     case 1:
                         sType = "전기자전거";
+                        tType="Electric";
                         break;
                     case 2:
                         sType = "산악자전거";
+                        tType="Mountain";
                         break;
                     case 3:
                         sType = "하이브리드자전거";
+                        tType="Hybrid";
                         break;
                     case 4:
                         sType = "미니벨로";
+                        tType="Mini";
                         break;
                     case  5:
                         sType = "기타자전거";
+                        tType="Other";
                         break;
                     default:
                         sType = "no bike type error" + Integer.toString(iType);
                 }
                 String sAddInfo = addInfo.getText().toString();
-                String bikecode = owner+Double.toString(latitude)+sType;
+                String bikecode = owner+Double.toString(latitude)+tType;
+                imageurl="http://13.125.229.179//"+bikecode+".jpg";
 
                 ArrayList<String> queryResult;
                 ArrayList<String> queryResult_smartlock;
@@ -578,10 +586,14 @@ public class BikeRegisterActivity extends AppCompatActivity {
                             validtimeRequest[i] = new ValidtimeRequest(bikecode,start_time_day.get(i),end_time_day.get(i),"day", responseListener);
                             queue.add(validtimeRequest[i]);
                         }
-                        for(;i<start_time_night.size()+start_time_day.size();i++){
-                            validtimeRequest[i] = new ValidtimeRequest(bikecode,start_time_night.get(i-start_time_night.size()),end_time_night.get(i-start_time_night.size()),"night", responseListener);
+                        for(i=0;i<start_time_night.size();i++){
+                            validtimeRequest[i] = new ValidtimeRequest(bikecode,start_time_night.get(i),end_time_night.get(i),"night", responseListener);
                             queue.add(validtimeRequest[i]);
                         }
+                        Intent intent_camera=new Intent(BikeRegisterActivity.this, CameraActivity.class);
+                        intent_camera.putExtra("requestCode",0);
+                        intent_camera.putExtra("bikecode",bikecode);
+                        startActivityForResult(intent_camera,10);
                         finish();
                     } catch (ExecutionException e) {
 

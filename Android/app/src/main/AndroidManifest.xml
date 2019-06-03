@@ -24,7 +24,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".AdminChargeActivity"></activity>
+        <activity android:name=".CheckReportActivity"></activity>
+        <activity android:name=".AdminChargeActivity" />
         <activity android:name=".AdminReportActivity" />
         <activity android:name=".PointAdminActivity" />
         <activity android:name=".PointMainActivity" />

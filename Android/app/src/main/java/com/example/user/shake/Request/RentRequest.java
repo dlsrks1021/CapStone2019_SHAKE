@@ -11,7 +11,7 @@ public class RentRequest extends StringRequest{
     static private String URL = "http://13.125.229.179/Rent.php";
     private Map<String, String> parameters;
 
-    public RentRequest(String bikecode, String borrower,String rent_time,String return_time,int allow,int insurance, Response.Listener<String> listener){
+    public RentRequest(String bikecode, String borrower,String rent_time,String return_time,int allow,int insurance, int value,Response.Listener<String> listener){
         super(Method.POST, URL, listener, null);
         parameters = new HashMap<>();
         parameters.put("bikecode",bikecode);
@@ -20,6 +20,7 @@ public class RentRequest extends StringRequest{
         parameters.put("return_time",return_time);
         parameters.put("allow",allow+"");
         parameters.put("insurance",insurance+"");
+        parameters.put("value",value+"");
     }
 
     //Use Later

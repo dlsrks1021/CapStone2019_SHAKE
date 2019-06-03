@@ -61,10 +61,8 @@ public class PointActivity extends AppCompatActivity {
                         list_itemArrayList.add(new ListVI("http://13.125.229.179/white.png","충전 금액 : "+jsonPoint.split("\"")[2*i+1]+" P",json_time.split("\"")[2*i+1],finish_string));
                     }
                     final Intent intent = new Intent(PointActivity.this,ReportMainAcitivity.class);
-                    System.out.println(list_itemArrayList.get(0));
                     //변수 초기화
                     adapter = new PointViewAdapter(PointActivity.this,list_itemArrayList);
-
                     //어뎁터 할당
                     listView.setAdapter(adapter);
                 }

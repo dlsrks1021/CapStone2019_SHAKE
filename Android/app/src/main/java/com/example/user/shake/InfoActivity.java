@@ -264,9 +264,11 @@ public class InfoActivity extends AppCompatActivity {
                         long time = System.currentTimeMillis();
                         SimpleDateFormat dayTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                         String day = dayTime.format(new Date(time));
+                        int request=1;//RequestCode -> 0 : 바이크 등록 사진 / 1: 반납할때 사진 / 2: 신고 사진
                         Intent intent_test = new Intent(InfoActivity.this,CameraActivity.class);
                         intent_test.putExtra("userID",userId);
                         intent_test.putExtra("rentnumber",rentnumber);
+                        intent_test.putExtra("requestCode",request);
                         startActivityForResult(intent_test,10);
                         ReturnRequest returnRequest = new ReturnRequest(getIntent().getStringExtra("userId"), Integer.parseInt(rentnumber),day, "http://13.125.229.179/"+userId+"_"+rentnumber+".jpg", 123, responseListener);
                         RequestQueue queue = Volley.newRequestQueue(InfoActivity.this);

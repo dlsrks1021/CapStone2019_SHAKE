@@ -20,7 +20,9 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.example.user.shake.Request.CheckRequest;
+import com.example.user.shake.Request.GetMyPointRequest;
 import com.example.user.shake.Request.GetRentBikeInfo;
+import com.example.user.shake.Request.GetRenttimeRequest;
 import com.example.user.shake.Request.GetValidTimeRequest;
 import com.example.user.shake.Request.RentRequest;
 
@@ -36,11 +38,12 @@ public class RentActivity extends AppCompatActivity {
     ImageView image;
     int select_renttime=0;
     int insurance=0; int allow=0;
-    int cost;
+    int cost,current_point;
     TimePicker tp;
     static String day;
-    String json_day_start,json_day_end,json_night_start,json_night_end;
+    String json_day_start,json_day_end,json_night_start,json_night_end,bikecode;
     ArrayList<Integer> validtime;
+    ArrayList<String> gettime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,11 +53,12 @@ public class RentActivity extends AppCompatActivity {
         String[] info = new String[2];
         info=((Main2Activity)Main2Activity.mContext).getInfo();
         validtime=new ArrayList<>();
+        gettime=new ArrayList<>();
         tp=(TimePicker)findViewById(R.id.tp);
         Calendar tp_time=Calendar.getInstance();
         final Intent intent = getIntent();
 
-        String bikecode=intent.getStringExtra("bikecode");
+        bikecode=intent.getStringExtra("bikecode");
         final Button rentbtn = (Button) findViewById(R.id.rent_button);
         select_time=(TextView)findViewById(R.id.explain10);
         select_cost=(TextView)findViewById(R.id.explain_bike_model2);
@@ -68,8 +72,9 @@ public class RentActivity extends AppCompatActivity {
         image=findViewById(R.id.imageView_rent);
 
         //Test
-        Glide.with(this).load("http://13.125.229.179/bike.png").into(image);
-        Toast.makeText(getApplication(),"대여 가능시간을 확인해주세요",Toast.LENGTH_SHORT).show();
+        if(bikecode.equals("not implemented yet")) Glide.with(this).load("http://13.125.229.179/bike.png").into(image);
+        else Glide.with(this).load("http://13.125.229.179//"+bikecode+".jpg").into(image);
+        //Toast.makeText(getApplication(),"대여 가능시간을 확인해주세요",Toast.LENGTH_SHORT).show();
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
@@ -92,6 +97,22 @@ public class RentActivity extends AppCompatActivity {
         CheckRequest checkRequest = new CheckRequest(borrower, responseListener);
         RequestQueue queue = Volley.newRequestQueue(RentActivity.this);
         queue.add(checkRequest);
+
+        Response.Listener<String> responseListener5 = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try{
+                    JSONObject jsonResponse = new JSONObject(response);
+                    current_point=jsonResponse.getInt("point");
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        };
+        GetMyPointRequest getMyPointRequest = new GetMyPointRequest(borrower, responseListener5);
+        RequestQueue queue5 = Volley.newRequestQueue(RentActivity.this);
+        queue5.add(getMyPointRequest);
 
         Response.Listener<String> responseListener1 = new Response.Listener<String>() {
             @Override
@@ -133,7 +154,9 @@ public class RentActivity extends AppCompatActivity {
                     json_night_start=jsonResponse.getString("night_start");
                     json_night_end=jsonResponse.getString("night_end");
                     int len_day = json_day_start.split(",").length;
+                    if(json_day_start.equals("[]")) len_day=0;
                     int len_night = json_night_start.split(",").length;
+                    if(json_night_start.equals("[]")) len_night=0;
                     String string_day = "<오전>\n"; String string_night = "<오후>\n";
                     for(int i=0;i<len_day;i++){
                         string_day+=json_day_start.split("\"")[2*i+1]+" ~ "+json_day_end.split("\"")[2*i+1]+"시\n";
@@ -161,6 +184,32 @@ public class RentActivity extends AppCompatActivity {
         GetValidTimeRequest getValidTimeRequest = new GetValidTimeRequest(bikecode, responseListener2);
         RequestQueue queue2 = Volley.newRequestQueue(RentActivity.this);
         queue2.add(getValidTimeRequest);
+
+        Response.Listener<String> responseListener3 = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try{
+                    JSONObject jsonResponse = new JSONObject(response);
+                    String json_renttime=jsonResponse.getString("renttime");
+                    String json_returntime=jsonResponse.getString("returntime");
+                    int len = json_renttime.split(",").length;
+                    if(json_renttime.equals("[]")) len=0;
+                    String string_day = "<오전>\n"; String string_night = "<오후>\n";
+                    for(int i=0;i<len;i++){
+                        gettime.add(json_renttime.split("\"")[2*i+1]);
+                        gettime.add(json_returntime.split("\"")[2*i+1]);
+                    }
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        };
+        GetRenttimeRequest getRenttimeRequest = new GetRenttimeRequest(bikecode, responseListener3);
+        RequestQueue queue3 = Volley.newRequestQueue(RentActivity.this);
+        queue2.add(getRenttimeRequest);
+
+
 
 
         rentbtn.setOnClickListener(new View.OnClickListener() {
@@ -220,11 +269,14 @@ public class RentActivity extends AppCompatActivity {
                     if(hour>Integer.parseInt(save_day.split(" ")[1].split(":")[0])||(hour==Integer.parseInt(save_day.split(" ")[1].split(":")[0])&&min>=Integer.parseInt(save_day.split(" ")[1].split(":")[1]))){
                         execute_flag=1; //현재 시간보다 뒤인지 확인
                     }
-                    for(int i=0;i<validtime.size();i++){
+                    for(int i=0;i<validtime.size()/2;i++){
                         if(Integer.parseInt(day.split(" ")[1].split(":")[0])>=validtime.get(2*i)&&
-                                ((Integer.parseInt(return_time.split(" ")[1].split(":")[0])<=validtime.get(2*i+1)&&Integer.parseInt(return_time.split(" ")[1].split(":")[1])==0)||
-                                        Integer.parseInt(day.split(" ")[0].split("-")[2])<Integer.parseInt(return_time.split(" ")[0].split("-")[2]))){
+                                ((Integer.parseInt(return_time.split(" ")[1].split(":")[0])==validtime.get(2*i+1)&&Integer.parseInt(return_time.split(" ")[1].split(":")[1])==0)||Integer.parseInt(return_time.split(" ")[1].split(":")[0])<validtime.get(2*i+1)||
+                                        (Integer.parseInt(day.split(" ")[0].split("-")[2])<Integer.parseInt(return_time.split(" ")[0].split("-")[2])&&Integer.parseInt(return_time.split(" ")[1].split("-")[0])<validtime.get(1)&&validtime.get(0)==0)
+                        ||(Integer.parseInt(day.split(" ")[0].split("-")[2])<Integer.parseInt(return_time.split(" ")[0].split("-")[2])&&Integer.parseInt(return_time.split(" ")[1].split("-")[0])==validtime.get(1)&&validtime.get(0)==0&&Integer.parseInt(return_time.split(" ")[1].split(":")[1])==0)))
+                        {
                             execute_flag=1;
+                            break;
                         }
                         else{
                             execute_flag=0;
@@ -233,12 +285,23 @@ public class RentActivity extends AppCompatActivity {
                     if(validtime.size()==0)execute_flag=0;
 
                     if(execute_flag==1) {
-                        RentRequest rentRequest = new RentRequest(intent.getStringExtra("bikecode"), intent.getStringExtra("borrower"), day, return_time, allow, insurance, responseListener);
-                        RequestQueue queue = Volley.newRequestQueue(RentActivity.this);
-                        queue.add(rentRequest);
+                        if(select_renttime!=0) {
+                            if(current_point>=select_renttime*cost) {
+                                RentRequest rentRequest = new RentRequest(intent.getStringExtra("bikecode"), intent.getStringExtra("borrower"), day, return_time, allow, insurance, current_point-select_renttime * cost, responseListener);
+                                RequestQueue queue = Volley.newRequestQueue(RentActivity.this);
+                                queue.add(rentRequest);
+                                Toast.makeText(getApplication(),"정상적으로 대여되었습니다",Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                            else{
+                                Toast.makeText(getApplication(),"포인트가 부족합니다",Toast.LENGTH_SHORT).show();
+                            }
+                        }else{
+                            Toast.makeText(getApplication(),"1시간 이상 대여 가능합니다",Toast.LENGTH_SHORT).show();
+                        }
                     }
                     else{
-                        System.out.println(return_time);
+                        //System.out.println(return_time);
                         Toast.makeText(getApplication(),"대여 가능시간을 확인 해주세요",Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -280,8 +343,11 @@ public class RentActivity extends AppCompatActivity {
         View view = inflater.inflate(R.layout.dialog_validtime, null);
         builder.setView(view);
         TextView validtime_dialog=(TextView)view.findViewById(R.id.textView26);
+        TextView getTime = (TextView)view.findViewById(R.id.textView28);
         int len_day = json_day_start.split(",").length;
+        if(json_day_start.equals("[]")) len_day=0;
         int len_night = json_night_start.split(",").length;
+        if(json_night_start.equals("[]")) len_night=0;
         String string_day = "<오전>\n"; String string_night = "<오후>\n";
         for(int i=0;i<len_day;i++){
             string_day+=json_day_start.split("\"")[2*i+1]+" ~ "+json_day_end.split("\"")[2*i+1]+"시\n";
@@ -289,13 +355,22 @@ public class RentActivity extends AppCompatActivity {
         for(int i=0;i<len_night;i++){
             string_night+=json_night_start.split("\"")[2*i+1]+" ~ "+json_night_end.split("\"")[2*i+1]+"시\n";
         }
+        String time="";
+        for(int i=0;i<gettime.size()/2;i++){
+            time+=gettime.get(2*i)+" ~ "+gettime.get(2*i+1)+"\n";
+        }
         validtime_dialog.setText(string_day+string_night);
+        getTime.setText(time);
         final AlertDialog dialog = builder.create();
         WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
         params.width=370;
         params.height=420;
         dialog.getWindow().setAttributes(params);
         dialog.show();
-
+    }
+    public void reportCheckClicked(View v){
+        Intent intent = new Intent(RentActivity.this,CheckReportActivity.class);
+        intent.putExtra("bikecode",bikecode);
+        startActivity(intent);
     }
 }

@@ -55,8 +55,8 @@ public class CameraActivity extends AppCompatActivity {
     ProgressDialog dialog = null;
     String upLoadServerUri = "http://13.125.229.179/UploadToServer.php";
     String uploadFilePath,uploadFileName;
-    int serverResponseCode = 0;
-    String rentnumber,borrower;
+    int serverResponseCode = 0; int requestCode = 0;
+    String rentnumber,borrower,bikecode;
 
     int captureCount=0;
 
@@ -65,9 +65,15 @@ public class CameraActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
         final Intent intent = getIntent();
-        borrower=intent.getStringExtra("userID");
-        rentnumber=intent.getStringExtra("rentnumber");
 
+        requestCode=intent.getIntExtra("requestCode",0);
+        if(requestCode==1){
+            borrower=intent.getStringExtra("userID");
+            rentnumber=intent.getStringExtra("rentnumber");
+        }
+        else if(requestCode==0){
+            bikecode=intent.getStringExtra("bikecode");
+        }
         permission = new PermissionCheck(CameraActivity.this);
 
         mContext=this;
@@ -143,7 +149,14 @@ public class CameraActivity extends AppCompatActivity {
     public File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = borrower+"_"+rentnumber+".jpg";
+        String imageFileName="";
+        if(requestCode==1){
+            imageFileName = borrower+"_"+rentnumber+".jpg";
+        }
+        else if(requestCode==0){
+            imageFileName = bikecode+".jpg";
+        }
+
         //String imageFileName = "JPEG_" + timeStamp + ".jpg";
         File imageFile = null;
         File storageDir = new File(Environment.getExternalStorageDirectory() + "/Pictures", "gyeom");
@@ -424,5 +437,4 @@ public class CameraActivity extends AppCompatActivity {
                 break;
         }
     }
-
 }
