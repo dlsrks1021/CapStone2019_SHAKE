@@ -35,7 +35,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ItemVi
     // View 의 내용을 해당 포지션의 데이터로 바꿉니다.
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-        holder.textView.setText(mItems.get(position).getName()+"\n"+mItems.get(position).getDistance()+"\n"+mItems.get(position).getPrice()+"원");
+        String text = mItems.get(position).getName()+"\n"+String.format("%.3f", mItems.get(position).getDistance())+"km\n"+mItems.get(position).getPrice()+"원";
+        holder.textView.setText(text);
         holder.ratingBar.setRating(mItems.get(position).getRating());
         if (mItems.get(position).getImageUrl().contains("http")) {
             Glide.with(context).load(mItems.get(position).getImageUrl()).into(holder.bikeImage);
