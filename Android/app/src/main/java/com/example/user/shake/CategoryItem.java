@@ -4,63 +4,53 @@ import java.util.Date;
 
 public class CategoryItem{
 
-    private String name, owner, bike, content, date, imageUrl;
+    private String name, type, imageUrl;
+    private int price;
     private float rating;
+    public double distance;
 
-    public CategoryItem (){
-        this.name = name;
+    public String getType() {
+        return type;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String  getDate() {
-        return date;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public float getRating() {
         return rating;
     }
 
-    public String getBike() {
-        return bike;
+    public int getPrice() {
+        return price;
     }
 
-    public String getOwner() {
-        return owner;
+    public double getDistance() {
+        return distance;
     }
 
-    public String getContent() {
-        return content;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setBike(String bike) {
-        this.bike = bike;
+    public String getName() {
+        return name;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setDistance(double distance) {
+        this.distance = distance;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public void setPrice(int price) {
+        this.price = price;
     }
 
     public void setRating(float rating) {

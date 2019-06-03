@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="bikeTypeArray">
+        <item>---------종류---------</item>
         <item>로드자전거</item>
         <item>전기자전거</item>
         <item>산악자전거</item>
@@ -8,4 +9,11 @@
         <item>미니벨로</item>
         <item>기타자전거</item>
     </string-array>
+
+    <string-array name="sortingType">
+        <item>----정렬----</item>
+        <item>가격</item>
+        <item>거리</item>
+    </string-array>
+
 </resources>
