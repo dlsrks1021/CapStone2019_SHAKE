@@ -1,71 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:background="#fff"
     android:layout_width="match_parent"
-    android:layout_height="300dp">
-    <ImageView
-        android:src="@drawable/login_icon"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
-        android:layout_width="70dp"
-        android:layout_height="70dp" />
+    android:layout_height="200dp"
+    android:background="#fff"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/recyclerNameView"
+    <RatingBar
+        android:id="@+id/category_ratingBar"
+        style="?android:attr/ratingBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="23dp"
-        android:text="김김김"
-        android:textSize="25dp" />
-
-    <TextView
-        android:id="@+id/recyclerDateView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="263dp"
-        android:layout_marginTop="45dp"
-        android:text="2019-04-02 18:39"
-        android:textSize="15dp" />
-
-    <TextView
-        android:id="@+id/recyclerOwnerBikeView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="65dp"
-        android:text="kkc's road123"
-        android:textSize="20dp" />
-
-    <RatingBar style="?android:attr/ratingBarStyleSmall"
-        android:id="@+id/recyclerRatingBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="300dp"
-        android:layout_marginTop="23dp"
+        android:layout_marginStart="320dp"
+        android:layout_marginTop="25dp"
         android:isIndicator="true"
-        android:numStars="5"
-        android:stepSize="0.5"
         android:max="5"
-        />
+        android:numStars="5"
+        android:stepSize="0.5" />
 
     <TextView
-        android:id="@+id/recyclerContentView"
+        android:id="@+id/category_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="180dp"
-        android:layout_marginTop="110dp"
-        android:text="이 자전거는 정말 좋습니다."
+        android:layout_marginStart="170dp"
+        android:layout_marginTop="50dp"
+        android:text="이 자전거는 정말 좋습니다.ddddddddddddddddddddddddddddddddd"
         android:textSize="20dp" />
 
     <ImageView
-        android:id="@+id/recyclerBikeImage"
+        android:id="@+id/category_bike_image"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_marginTop="110dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="15dp"
         android:src="@drawable/shake_icon" />
 
 </RelativeLayout>

@@ -31,6 +31,9 @@
         <item
             android:id="@+id/itemTerms"
             android:title="약관"/>
+        <item
+            android:id="@+id/itemCategory"
+            android:title="검색"/>
     </group>
 
 </menu>

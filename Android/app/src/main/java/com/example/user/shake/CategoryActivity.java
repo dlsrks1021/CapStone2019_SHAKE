@@ -6,6 +6,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
+import com.example.user.shake.Request.PhpRequest;
+
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,11 +36,7 @@ public class CategoryActivity extends AppCompatActivity {
 
     private void setData(){
         mItems.clear();
-
-        String reviewContent="";
-        CategoryItem categoryItem = new CategoryItem();
-        categoryItem.setContent(reviewContent);
-        mItems.add(categoryItem);
+        mItems = PhpRequest.getCategoryItem(getApplicationContext());
     }
 
 }
