@@ -2,10 +2,12 @@ package com.example.user.shake;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -18,9 +20,12 @@ import java.util.ArrayList;
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ItemViewHolder> {
     ArrayList<CategoryItem> mItems;
     Context context;
-    public CategoryAdapter(Context context, ArrayList<CategoryItem> items){
+    String borrower;
+
+    public CategoryAdapter(Context context, ArrayList<CategoryItem> items, Intent intent){
         mItems = items;
         this.context = context;
+        borrower = intent.getStringExtra("userId");
     }
 
 
@@ -34,13 +39,23 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ItemVi
 
     // View 의 내용을 해당 포지션의 데이터로 바꿉니다.
     @Override
-    public void onBindViewHolder(ItemViewHolder holder, int position) {
+    public void onBindViewHolder(ItemViewHolder holder, final int position) {
         String text = mItems.get(position).getName()+"\n"+String.format("%.3f", mItems.get(position).getDistance())+"km\n"+mItems.get(position).getPrice()+"원";
         holder.textView.setText(text);
         holder.ratingBar.setRating(mItems.get(position).getRating());
         if (mItems.get(position).getImageUrl().contains("http")) {
             Glide.with(context).load(mItems.get(position).getImageUrl()).into(holder.bikeImage);
         }
+
+        holder.rentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, RentActivity.class);
+                intent.putExtra("bikecode", mItems.get(position).getBikecode());
+                intent.putExtra("borrower", borrower);
+                context.startActivity(intent);
+            }
+        });
     }
 
     // 데이터 셋의 크기를 리턴해줍니다.
@@ -55,13 +70,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ItemVi
         private TextView textView;
         private RatingBar ratingBar;
         private ImageView bikeImage;
+        private Button rentButton;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.category_textview);
             ratingBar = itemView.findViewById(R.id.category_ratingBar);
             bikeImage = itemView.findViewById(R.id.category_bike_image);
-
+            rentButton = itemView.findViewById(R.id.category_rent_button);
         }
     }
 }
