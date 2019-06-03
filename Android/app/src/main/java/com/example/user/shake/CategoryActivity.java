@@ -1,5 +1,6 @@
 package com.example.user.shake;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,11 +29,13 @@ public class CategoryActivity extends AppCompatActivity {
     private ArrayList<CategoryItem> mItems = new ArrayList<>();
     private ArrayList<CategoryItem> copyMItems = new ArrayList<>();
     private Spinner spinner_1, spinner_2;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
+        intent = getIntent();
         categoryView = findViewById(R.id.categoryView);
         setRecyclerView();
 
@@ -54,7 +57,7 @@ public class CategoryActivity extends AppCompatActivity {
                                 return Integer.compare(c1.getPrice(), c2.getPrice());
                             }
                         });
-                        adapter = new CategoryAdapter(getApplicationContext(), copyMItems);
+                        adapter = new CategoryAdapter(getApplicationContext(), copyMItems, intent);
                         categoryView.setAdapter(adapter);
                         break;
                     case 2://거리
@@ -64,7 +67,7 @@ public class CategoryActivity extends AppCompatActivity {
                                 return Double.compare(c1.getDistance(), c2.getDistance());
                             }
                         });
-                        adapter = new CategoryAdapter(getApplicationContext(), copyMItems);
+                        adapter = new CategoryAdapter(getApplicationContext(), copyMItems, intent);
                         categoryView.setAdapter(adapter);
                         break;
                         default:
@@ -139,7 +142,7 @@ public class CategoryActivity extends AppCompatActivity {
     }
 
     private void setRecyclerView(){
-        adapter = new CategoryAdapter(getApplicationContext(), mItems);
+        adapter = new CategoryAdapter(getApplicationContext(), mItems, intent);
         categoryView.setAdapter(adapter);
         categoryView.setLayoutManager(new LinearLayoutManager(this));
         setData();
@@ -161,9 +164,9 @@ public class CategoryActivity extends AppCompatActivity {
             }
         }
         if (bikeType.equals("all"))
-            adapter = new CategoryAdapter(getApplicationContext(), copyMItems);
+            adapter = new CategoryAdapter(getApplicationContext(), copyMItems, intent);
         else
-            adapter = new CategoryAdapter(getApplicationContext(), bikeTypeSortingList);
+            adapter = new CategoryAdapter(getApplicationContext(), bikeTypeSortingList, intent);
         categoryView.setAdapter(adapter);
     }
 

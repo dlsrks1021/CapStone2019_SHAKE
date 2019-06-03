@@ -4,10 +4,18 @@ import java.util.Date;
 
 public class CategoryItem{
 
-    private String name, type, imageUrl;
+    private String name, type, imageUrl, bikecode;
     private int price;
     private float rating;
     public double distance;
+
+    public String getBikecode() {
+        return bikecode;
+    }
+
+    public void setBikecode(String bikecode) {
+        this.bikecode = bikecode;
+    }
 
     public String getType() {
         return type;

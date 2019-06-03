@@ -206,6 +206,7 @@ public class Main2Activity extends AppCompatActivity
         }
         else if (id == R.id.itemCategory){
             Intent intent2 = new Intent(Main2Activity.this, CategoryActivity.class);
+            intent2.putExtra("userId", userID);
             Main2Activity.this.startActivity(intent2);
         }
 

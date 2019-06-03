@@ -55,7 +55,7 @@ public class PhpRequest {
     public static ArrayList<CategoryItem> getCategoryItem(Context context){
         ArrayList<CategoryItem> itemList = new ArrayList<>();
         ArrayList<String> rowItemList= connect("http://13.125.229.179/getBikeListCategory.php");
-        for (int i = 0; i < rowItemList.size(); i += 7){
+        for (int i = 0; i < rowItemList.size(); i += 8){
             CategoryItem item = new CategoryItem();
             Double latitude = Double.parseDouble(rowItemList.get(i));
             Double longitude = Double.parseDouble(rowItemList.get(i + 1));
@@ -64,7 +64,7 @@ public class PhpRequest {
             String name = rowItemList.get(i + 4);
             String type = rowItemList.get(i + 5);
             float rating = Float.parseFloat(rowItemList.get(i + 6));
-
+            String bikecode = rowItemList.get(i + 7);
             Double distance, gapLatitude, gapLongitude;
             GpsInfo gpsInfo = new GpsInfo(context);
             gapLatitude = latitude - gpsInfo.getLatitude();
@@ -80,6 +80,7 @@ public class PhpRequest {
             item.setImageUrl(image);
             item.setPrice(cost);
             item.setRating(rating);
+            item.setBikecode(bikecode);
 
             itemList.add(item);
         }
