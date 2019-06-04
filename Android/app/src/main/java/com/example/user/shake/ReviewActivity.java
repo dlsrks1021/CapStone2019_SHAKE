@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.user.shake.Request.PhpRequest;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -57,17 +58,14 @@ public class ReviewActivity extends AppCompatActivity {
 
         imageUrl = "not implemented yet";
         PhpConnect task = new PhpConnect();
-        try {
-            ArrayList<String> image;
-            image = task.execute("http://13.125.229.179/getImageUrlUsingRentnumber.php?rentnumber="+rentnumber).get();
-            imageUrl = image.get(0);
-            if (imageUrl.contains("http")) {
+        imageUrl = "http://13.125.229.179/"+userId+"_"+Integer.toString(rentnumber)+".jpg";
+        if (imageUrl.contains("http")) {
+            try{
+                Thread.sleep(300);
                 Glide.with(this).load(imageUrl).into(reviewImage);
+            }catch (InterruptedException e){
+
             }
-        }catch (InterruptedException e){
-            e.printStackTrace();
-        }catch (ExecutionException e) {
-            e.printStackTrace();
         }
 
         submitButton.setOnClickListener(new View.OnClickListener() {
