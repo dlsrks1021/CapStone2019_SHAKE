@@ -77,7 +77,16 @@ public class ReportMainAcitivity extends AppCompatActivity {
                                             }
                                         }
                                     };
-                                    ReportRequest reportRequest = new ReportRequest(borrower, bikecode, rent_time, img_url, report_content, requestCode, responseListener);
+                                    String url=rent_time.replace(" ","_");
+                                    url=url.replaceAll("-","_");
+                                    url=url.replaceAll(":","_");
+                                    img_url="report_"+url+".jpg";
+                                    //System.out.println(img_url+"IMGURL");
+                                    Intent intent_test = new Intent(ReportMainAcitivity.this,CameraActivity.class);
+                                    intent_test.putExtra("imgurl",img_url);
+                                    intent_test.putExtra("requestCode",2);
+                                    startActivityForResult(intent_test,10);
+                                    ReportRequest reportRequest = new ReportRequest(borrower, bikecode, rent_time, "http://13.125.229.179/"+img_url, report_content, requestCode, responseListener);
                                     RequestQueue queue = Volley.newRequestQueue(ReportMainAcitivity.this);
                                     queue.add(reportRequest);
                                     finish();

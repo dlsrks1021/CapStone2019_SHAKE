@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class ReportOwnerActivity extends AppCompatActivity {
     private TextView explain;
-    public String json_rentnumber,json_bikecode,json_rent_time;
+    public String json_rentnumber,json_bikecode,json_rent_time,json_url,temp;
     Intent intent_main;
 
     static String imgUrl = "http://13.125.229.179/JPEG_20190512_201100.jpg";
@@ -53,18 +53,29 @@ public class ReportOwnerActivity extends AppCompatActivity {
                     json_rentnumber=jsonResponse.getString("rentnumber");
                     json_bikecode = jsonResponse.getString("bikecode");
                     json_rent_time = jsonResponse.getString("rent_time");
-                    System.out.println(json_rentnumber+"   "+json_bikecode+"   "+json_rent_time);
+                    json_url = jsonResponse.getString("imageurl");
+                    //System.out.println(json_rentnumber);
                     rentnumber=new ArrayList<>(); img_url=new ArrayList<>();
                     // bikecode=new ArrayList<>(); rent_time=new ArrayList<>();
                     //Title=new ArrayList<>(); Context=new ArrayList<>(); img=new ArrayList<>();
-
                     int len = json_rentnumber.split(",").length;
+                    if(json_rentnumber.split(",").equals("[]")){
+                        len=0;
+                        list_itemArrayList.add(new ListVO("http://13.125.229.179/white.png","공유 기록이 없습니다.",""));
+                    }
                     for(int i=0;i<len;i++){
-                        rentnumber.add(json_rentnumber.split("\"")[2*i+1]);
-                        list_itemArrayList.add(new ListVO("http://13.125.229.179/JPEG_20190512_201100.jpg",json_bikecode.split("\"")[2*i+1],json_rent_time.split("\"")[2*i+1]));
+                        temp="";
+                        if(json_url.split("\"")[2*i+1].equals("not implemented yet")){
+                            temp="http://13.125.229.179/JPEG_20190512_201100.jpg";
+                        }else{
+                            temp=json_url.split("\"")[2*i+1];
+                            temp=temp.replaceAll("\\\\","");
+                        }
+                        //System.out.println(temp);
+                        list_itemArrayList.add(new ListVO(temp,json_bikecode.split("\"")[2*i+1],json_rent_time.split("\"")[2*i+1]));
                     }
                     final Intent intent = new Intent(ReportOwnerActivity.this,ReportMainAcitivity.class);
-
+                    System.out.println(list_itemArrayList.get(0));
                     //변수 초기화
                     adapter = new ReportViewAdapter(ReportOwnerActivity.this,list_itemArrayList);
                     listview = (ListView) findViewById(R.id.listview_owner_report);
@@ -76,12 +87,13 @@ public class ReportOwnerActivity extends AppCompatActivity {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             Toast.makeText(ReportOwnerActivity.this,list_itemArrayList.get(position).getTitle(),Toast.LENGTH_SHORT).show();
-                            intent.putExtra("img_url","http://13.125.229.179/test_18.jpg");
+                            intent.putExtra("img_url",temp);
                             intent.putExtra("borrower",intent_main.getStringExtra("userId"));
                             intent.putExtra("bikecode",list_itemArrayList.get(position).getTitle());
                             intent.putExtra("renttime",list_itemArrayList.get(position).getContext());
                             intent.putExtra("requestCode",1);//대여기록 = 0, 공유기록=1
                             startActivity(intent);
+                            finish();
                         }
                     });
 

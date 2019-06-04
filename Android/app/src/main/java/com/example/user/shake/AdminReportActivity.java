@@ -23,7 +23,7 @@ public class AdminReportActivity extends AppCompatActivity {
     Intent intent_main;
 
     static String imgUrl = "http://13.125.229.179/JPEG_20190512_201100.jpg";
-    String borrower;
+    String borrower,temp;
 
     ArrayList<String> rentnumber,bikecode,rent_time;
     ArrayList<String> Title,Context,img_url;
@@ -62,7 +62,9 @@ public class AdminReportActivity extends AppCompatActivity {
                         else{
                             requestString="공유자";
                         }
-                        list_itemArrayList.add(new ListVT("http://13.125.229.179/JPEG_20190512_201100.jpg",json_borrower.split("\"")[2*i+1]+" 님",json_report_content.split("\"")[2*i+1],requestString,json_rent_time.split("\"")[2*i+1],json_bikecode.split("\"")[2*i+1]));
+                        temp=json_imageurl.split("\"")[2*i+1];
+                        temp=temp.replaceAll("\\\\","");
+                        list_itemArrayList.add(new ListVT(temp,json_borrower.split("\"")[2*i+1]+" 님",json_report_content.split("\"")[2*i+1],requestString,json_rent_time.split("\"")[2*i+1],json_bikecode.split("\"")[2*i+1]));
                         System.out.println(json_borrower.split("\"")[2*i+1]+" 님"+json_report_content.split("\"")[2*i+1]+requestString+json_rent_time.split("\"")[2*i+1]+json_bikecode.split("\"")[2*i+1]);
                     }
                     final Intent intent = new Intent(AdminReportActivity.this,ReportMainAcitivity.class);

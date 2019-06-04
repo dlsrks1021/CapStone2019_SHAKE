@@ -55,9 +55,8 @@ public class CameraActivity extends AppCompatActivity {
     ProgressDialog dialog = null;
     String upLoadServerUri = "http://13.125.229.179/UploadToServer.php";
     String uploadFilePath,uploadFileName;
-    int serverResponseCode = 0; int requestCode = 0;
-    String rentnumber,borrower,bikecode;
-
+    int serverResponseCode = 0; int requestCode_intent = 0;
+    String rentnumber,borrower,bikecode,temp_url;
     int captureCount=0;
 
     @Override
@@ -66,13 +65,16 @@ public class CameraActivity extends AppCompatActivity {
         setContentView(R.layout.activity_camera);
         final Intent intent = getIntent();
 
-        requestCode=intent.getIntExtra("requestCode",0);
-        if(requestCode==1){
+        requestCode_intent=intent.getIntExtra("requestCode",0);
+        if(requestCode_intent==1){
             borrower=intent.getStringExtra("userID");
             rentnumber=intent.getStringExtra("rentnumber");
         }
-        else if(requestCode==0){
+        else if(requestCode_intent==0){
             bikecode=intent.getStringExtra("bikecode");
+        }
+        else if(requestCode_intent==2){
+            temp_url=intent.getStringExtra("imgurl");
         }
         permission = new PermissionCheck(CameraActivity.this);
 
@@ -150,11 +152,14 @@ public class CameraActivity extends AppCompatActivity {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName="";
-        if(requestCode==1){
+        if(requestCode_intent==1){
             imageFileName = borrower+"_"+rentnumber+".jpg";
         }
-        else if(requestCode==0){
+        else if(requestCode_intent==0){
             imageFileName = bikecode+".jpg";
+        }
+        else if(requestCode_intent==2){
+            imageFileName = temp_url;
         }
 
         //String imageFileName = "JPEG_" + timeStamp + ".jpg";
@@ -240,11 +245,20 @@ public class CameraActivity extends AppCompatActivity {
                                 uploadFile(uploadFilePath+""+uploadFileName);
                             }
                         }).start();
-                        Intent intent = new Intent(CameraActivity.this, ReviewActivity.class);
-                        intent.putExtra("userId", borrower);
-                        intent.putExtra("rentnumber", Integer.parseInt(rentnumber));
-                        startActivity(intent);
-                        finish();
+                        System.out.println(requestCode+"REQUESTCODE");
+                        if(requestCode_intent==1) {
+                            Intent intent = new Intent(CameraActivity.this, ReviewActivity.class);
+                            intent.putExtra("userId", borrower);
+                            intent.putExtra("rentnumber", Integer.parseInt(rentnumber));
+                            startActivity(intent);
+                            finish();
+                        }
+                        else if(requestCode_intent==0){
+                            finish();
+                        }
+                        else if(requestCode_intent==2){
+                            finish();
+                        }
                     } catch (Exception e) {
                         System.out.println(mCurrentPhotoPath);
                         Log.e("REQUEST_TAKE_PHOTO", e.toString());
