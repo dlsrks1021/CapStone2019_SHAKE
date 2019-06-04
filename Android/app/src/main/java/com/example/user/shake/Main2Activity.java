@@ -347,6 +347,7 @@ public class Main2Activity extends AppCompatActivity
         markerOptions.title(title);
         markerOptions.snippet(context);
         map.addMarker(markerOptions);
+
     }
 
     private void rankerAddMarker(final GoogleMap map, LatLng pos, String title, String context){
@@ -366,7 +367,7 @@ public class Main2Activity extends AppCompatActivity
     private void userAddMarker(final GoogleMap map, LatLng pos){
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(pos);
-
+        markerOptions.zIndex(1);
         BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.userpos_icon);
         Bitmap b=bitmapdraw.getBitmap();
         Bitmap smallMarker = Bitmap.createScaledBitmap(b, 100, 100, false);

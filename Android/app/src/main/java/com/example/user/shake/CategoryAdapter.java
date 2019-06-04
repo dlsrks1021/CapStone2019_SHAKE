@@ -50,10 +50,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ItemVi
         holder.rentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, RentActivity.class);
+                Intent intent = new Intent(view.getContext(), RentActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("bikecode", mItems.get(position).getBikecode());
                 intent.putExtra("borrower", borrower);
-                context.startActivity(intent);
+                view.getContext().startActivity(intent);
             }
         });
     }
