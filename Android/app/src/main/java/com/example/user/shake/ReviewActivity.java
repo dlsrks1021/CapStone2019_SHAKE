@@ -43,6 +43,8 @@ public class ReviewActivity extends AppCompatActivity {
         submitButton = findViewById(R.id.reviewSubmitButton);
         reviewImage = findViewById(R.id.reviewImage);
 
+        if (rentnumber == -1)
+            finish();
 
         rating = (float) 3.5;
 
