@@ -185,11 +185,6 @@ public class Main2Activity extends AppCompatActivity
             intent2.putExtra("userId", userID);
             Main2Activity.this.startActivity(intent2);
         }
-        else if(id == R.id.itemReview){
-            Intent intent2 = new Intent(Main2Activity.this, ReviewActivity.class);
-            intent2.putExtra("userId", userID);
-            Main2Activity.this.startActivity(intent2);
-        }
         else if (id == R.id.itemReviewList){
             Intent intent2 = new Intent(Main2Activity.this, ReviewListActivity.class);
             intent2.putExtra("userId", userID);
@@ -372,7 +367,7 @@ public class Main2Activity extends AppCompatActivity
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(pos);
 
-        BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.person_icon);
+        BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.userpos_icon);
         Bitmap b=bitmapdraw.getBitmap();
         Bitmap smallMarker = Bitmap.createScaledBitmap(b, 100, 100, false);
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
