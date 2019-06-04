@@ -6,6 +6,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".RegisterBikeLocationActivity">
 
+    <EditText
+        android:id="@+id/register_bike_search_text"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="7dp"
+        android:hint="주소를 검색하세요"
+        android:background="@color/cardview_light_background"/>
+
+    <Button
+        android:id="@+id/register_bike_search_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="320dp"
+        android:layout_marginTop="7dp"
+        android:text="검색" />
+
     <fragment
         android:id="@+id/mapRegister"
         class="com.google.android.gms.maps.MapFragment"

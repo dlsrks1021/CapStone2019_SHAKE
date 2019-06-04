@@ -1,6 +1,8 @@
 package com.example.user.shake;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +20,9 @@ import com.example.user.shake.Request.ValidtimeRequest;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class BikeRegisterActivity extends AppCompatActivity {
@@ -508,31 +512,35 @@ public class BikeRegisterActivity extends AppCompatActivity {
 
                 switch (iType){
                     case 0:
+                        sType = "error";
+                        Toast.makeText(getApplication(),"자전거 종류를 선택해 주세요.",Toast.LENGTH_SHORT).show();
+                        break;
+                    case 1:
                         sType = "로드자전거";
                         tType="Road";
                         break;
-                    case 1:
+                    case 2:
                         sType = "전기자전거";
                         tType="Electric";
                         break;
-                    case 2:
+                    case 3:
                         sType = "산악자전거";
                         tType="Mountain";
                         break;
-                    case 3:
+                    case 4:
                         sType = "하이브리드자전거";
                         tType="Hybrid";
                         break;
-                    case 4:
+                    case 5:
                         sType = "미니벨로";
                         tType="Mini";
                         break;
-                    case  5:
+                    case 6:
                         sType = "기타자전거";
                         tType="Other";
                         break;
                     default:
-                        sType = "no bike type error" + Integer.toString(iType);
+                        sType = "error";
                 }
                 String sAddInfo = addInfo.getText().toString();
                 String bikecode = owner+Double.toString(latitude)+tType;
@@ -541,7 +549,7 @@ public class BikeRegisterActivity extends AppCompatActivity {
                 ArrayList<String> queryResult;
                 ArrayList<String> queryResult_smartlock;
 
-                if(exit_flag==1) {
+                if(exit_flag==1 && !sType.equals("error")) {
                     PhpConnect task = new PhpConnect();
                     PhpConnect task2 = new PhpConnect();
                     try {
@@ -614,7 +622,14 @@ public class BikeRegisterActivity extends AppCompatActivity {
             if (requestCode == 1){
                 latitude = data.getDoubleExtra("latitude", 0);
                 longitude = data.getDoubleExtra("longitude", 0);
-                location.setText(Double.toString(latitude)+", "+Double.toString(longitude));
+                Geocoder mGeocoder = new Geocoder(getApplicationContext());
+                try{
+                    List<Address> mResultList = mGeocoder.getFromLocation(latitude, longitude, 1);
+                    location.setText(mResultList.get(0).getAddressLine(0));
+                }
+                catch (IOException e){
+                    location.setText("주소정보가 없습니다.");
+                }
             }
         }
     }
