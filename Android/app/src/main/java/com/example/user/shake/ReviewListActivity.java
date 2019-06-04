@@ -1,9 +1,12 @@
 package com.example.user.shake;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
 import java.util.Date;
@@ -17,12 +20,42 @@ public class ReviewListActivity extends AppCompatActivity {
     private RecyclerView.Adapter adapter;
     private RecyclerView recyclerView;
     private ArrayList<RecyclerItem> mItems = new ArrayList<>();
+    private ArrayList<RecyclerItem> copyMItems = new ArrayList<>();
+    CheckBox checkMyBike;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review_list);
         recyclerView = findViewById(R.id.recyclerView);
+        checkMyBike = findViewById(R.id.review_list_checkBox);
         setRecyclerView();
+
+        checkMyBike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (checkMyBike.isChecked()){
+                    copyMItems.clear();
+                    Intent intent = getIntent();
+                    String userId = "";
+                    userId = intent.getStringExtra("userId");
+                    for (int i = 0; i < mItems.size(); ++i){
+
+                        if (mItems.get(i).getOwner().equals(userId)){
+                            copyMItems.add(mItems.get(i));
+                        }
+
+                    }
+                    adapter = new RecyclerAdapter(getApplicationContext(), copyMItems);
+                    recyclerView.setAdapter(adapter);
+                }
+                else {
+                    adapter = new RecyclerAdapter(getApplicationContext(), mItems);
+                    recyclerView.setAdapter(adapter);
+                }
+            }
+        });
+
     }
 
     private void setRecyclerView(){
@@ -31,6 +64,7 @@ public class ReviewListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         setData();
     }
+
 
     private void setData(){
         mItems.clear();

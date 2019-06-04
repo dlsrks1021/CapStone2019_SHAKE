@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -41,6 +42,7 @@ public class ReviewActivity extends AppCompatActivity {
         review = findViewById(R.id.reviewEdit);
         submitButton = findViewById(R.id.reviewSubmitButton);
         reviewImage = findViewById(R.id.reviewImage);
+
 
         rating = (float) 3.5;
 
