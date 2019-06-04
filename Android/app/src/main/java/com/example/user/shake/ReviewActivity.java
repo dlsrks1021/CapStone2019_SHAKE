@@ -60,8 +60,12 @@ public class ReviewActivity extends AppCompatActivity {
         PhpConnect task = new PhpConnect();
         imageUrl = "http://13.125.229.179/"+userId+"_"+Integer.toString(rentnumber)+".jpg";
         if (imageUrl.contains("http")) {
-            Glide.with(this).load(imageUrl).into(reviewImage);
-            Toast.makeText(getApplicationContext(),"이미지 업로드",Toast.LENGTH_SHORT).show();
+            try{
+                Thread.sleep(300);
+                Glide.with(this).load(imageUrl).into(reviewImage);
+            }catch (InterruptedException e){
+
+            }
         }
 
         submitButton.setOnClickListener(new View.OnClickListener() {

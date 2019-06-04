@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <uses-feature android:name="android.hardware.camera2" />
 
@@ -24,7 +25,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".CheckReportActivity"></activity>
+        <activity android:name=".FCMTestActivity"></activity>
+        <activity android:name=".CheckReportActivity" />
         <activity android:name=".AdminChargeActivity" />
         <activity android:name=".AdminReportActivity" />
         <activity android:name=".PointAdminActivity" />
@@ -95,6 +97,17 @@
         <activity android:name=".RentActivity" />
         <activity android:name=".InfoActivity" />
         <activity android:name=".CameraActivity" />
+
+        <service android:name=".MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

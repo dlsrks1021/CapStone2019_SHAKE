@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "781400909041",
+    "firebase_url": "https://shake-a525e.firebaseio.com",
+    "project_id": "shake-a525e",
+    "storage_bucket": "shake-a525e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:781400909041:android:933bbcaf41e31a9f",
+        "android_client_info": {
+          "package_name": "com.example.user.shake"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "781400909041-2djv0r9k5538frdesl7pehs76ebt5g6p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.user.shake",
+            "certificate_hash": "21d1ce525915c9bed52fb3127dbae790c6c78752"
+          }
+        },
+        {
+          "client_id": "781400909041-eaghslim1f4vrp1cgkg2n5dsm2m7fvva.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCS2I06YFNMhuKHnSsGRqkgKIKsfhI5pe0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "781400909041-eaghslim1f4vrp1cgkg2n5dsm2m7fvva.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

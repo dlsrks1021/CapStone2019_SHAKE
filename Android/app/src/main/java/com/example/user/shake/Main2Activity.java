@@ -34,6 +34,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -57,8 +58,11 @@ public class Main2Activity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+        String token = FirebaseInstanceId.getInstance().getToken();
+        System.out.println("TOKEN = "+token);
 
-        //Save User Information
+
+
         Intent intent = getIntent();
         userID = intent.getStringExtra("userID");
 
@@ -68,10 +72,39 @@ public class Main2Activity extends AppCompatActivity
         navTitle = findViewById(R.id.textNavTitle);
         navContext = findViewById(R.id.textNavContext);
 
+        /*FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            //Log.w(TAG, "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+
+                        // Log and toast
+                        String msg = getString(R.string.msg_token_fmt, token);
+                        Toast.makeText(Main2Activity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });*/
+
 
 
         //navTitle.setText(userID);
         Toast.makeText(getApplicationContext(),"화면을 스와이프하시면 메뉴가 보입니다.",Toast.LENGTH_SHORT).show();
+
+        //TEST
+        String tokenId = token;    //핸드폰별 구분을 위한 아이디값 ?
+
+        String server_key = "AAAAte8fpPE:APA91bF-RJ5YY5uL6IIHbOu41KizVrkwMsAotezRUn_JfZyt06-0TGr7_kusw2fomtf3PkuqDktkRY9rpwZNKZpOCyzYV8lEsQZk8LQKLtf2hFQvvgH2dugpBHkMt_LITayTJy_OgSdl";
+
+        String message = "hello world";
+
+        FCM.send_FCM_Notification( tokenId,server_key,message);
+
+//TEST END
 
         FragmentManager fragmentManager = getFragmentManager();
         MapFragment mapFragment = (MapFragment)fragmentManager
@@ -99,6 +132,63 @@ public class Main2Activity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+
+    /*public static final String FCM_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send";
+    OkHttpClient mClient = new OkHttpClient();
+    public void sendMessage(final JSONArray recipients, final String title, final String body, final String icon, final String message) {
+        new AsyncTask<String, String, String>() {
+            @Override
+            protected String doInBackground(String... params) {
+                try {
+                    JSONObject root = new JSONObject();
+                    JSONObject notification = new JSONObject();
+                    notification.put("body", body);
+                    notification.put("title", title);
+                    notification.put("icon", icon);
+
+                    JSONObject data = new JSONObject();
+                    data.put("message", message);
+                    root.put("notification", notification);
+                    root.put("data", data);
+                    root.put("registration_ids", recipients);
+
+                    String result = postToFCM(root.toString());
+                    //Log.d(TAG, "Result: " + result);
+                    return result;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                try {
+                    JSONObject resultJson = new JSONObject(result);
+                    int success, failure;
+                    success = resultJson.getInt("success");
+                    failure = resultJson.getInt("failure");
+                    Toast.makeText(getApplication(), "Message Success: " + success + "Message Failed: " + failure, Toast.LENGTH_LONG).show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplication(), "Message Failed, Unknown error occurred.", Toast.LENGTH_LONG).show();
+                }
+            }
+        }.execute();
+    }
+
+    String postToFCM(String bodyString) throws IOException {
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        RequestBody body = RequestBody.create(JSON, bodyString);
+        Request request = new Request.Builder()
+                .url(FCM_MESSAGE_URL)
+                .post(body)
+                .addHeader("Authorization", "key=" + "AAAAte8fpPE:APA91bF-RJ5YY5uL6IIHbOu41KizVrkwMsAotezRUn_JfZyt06-0TGr7_kusw2fomtf3PkuqDktkRY9rpwZNKZpOCyzYV8lEsQZk8LQKLtf2hFQvvgH2dugpBHkMt_LITayTJy_OgSdl")
+                .build();
+        Response response = mClient.newCall(request).execute();
+        return response.body().string();
+    }
+    */
 
 
 
@@ -395,12 +485,10 @@ public class Main2Activity extends AppCompatActivity
         }
         return false;
     }
-
     public String[] getInfo(){
         String[] temp = new String[2];
         temp[0]=userID;
         temp[1]=userName;
         return temp;
-
     }
 }
