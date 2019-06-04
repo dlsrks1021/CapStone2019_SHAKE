@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -32,8 +33,10 @@ public class BikeRegisterActivity extends AppCompatActivity {
     Spinner type;
     ImageView day1,day2,day3,day4,day5,day6,day7,day8,day9,day10,day11,day12;
     ImageView night1,night2,night3,night4,night5,night6,night7,night8,night9,night10,night11,night12;
+    CheckBox checkBox;
     int[] day=new int[12];
     int[] night=new int[12];
+    int allow=0;
 
     double longitude, latitude;
 
@@ -46,6 +49,8 @@ public class BikeRegisterActivity extends AppCompatActivity {
             day[i]=0;
             night[i]=0;
         }
+
+        checkBox=(CheckBox)findViewById(R.id.checkBox);
 
         //ImageView
         day1=findViewById(R.id.day1); day2=findViewById(R.id.day2); day3=findViewById(R.id.day3); day4=findViewById(R.id.day4); day5=findViewById(R.id.day5); day6=findViewById(R.id.day6);
@@ -553,9 +558,15 @@ public class BikeRegisterActivity extends AppCompatActivity {
                     PhpConnect task = new PhpConnect();
                     PhpConnect task2 = new PhpConnect();
                     try {
+                        if(checkBox.isChecked()){
+                            allow=0;
+                        }
+                        else{
+                            allow=1;
+                        }// allow -> 1: 즉시 예약 X / 0: 즉시 예약 O
                         //Bike Table에 저장
                         task.execute("http://13.125.229.179/insertBikeInfo.php?owner=" + owner + "&bikecode=" + bikecode + "&latitude=" + Double.toString(latitude) + "&longitude=" + Double.toString(longitude)
-                                + "&cost=" + sCost + "&url=" + imageurl + "&lockId=" + sLockId + "&model=" + sModel + "&type=" + sType + "&addInfo=" + sAddInfo).get();
+                                + "&cost=" + sCost + "&url=" + imageurl + "&lockId=" + sLockId + "&model=" + sModel + "&type=" + sType + "&addInfo=" + sAddInfo+"&allow="+allow).get();
                         //Smart Lock Table에 저장
                         task2.execute("http://13.125.229.179/insertSmartlockInfo.php?userId=" + owner + "&bikecode=" + bikecode + "&lockId=" + sLockId).get();
                         Intent intent2 = new Intent();

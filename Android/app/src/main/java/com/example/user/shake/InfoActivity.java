@@ -44,6 +44,7 @@ public class InfoActivity extends AppCompatActivity {
     EditText passwordEdit;
     EditText checkPasswordEdit;
     Button modifyButton, manageBikeButton;
+    int allow=0;
 
     //Test
     private final int PERMISSIONS_ACCESS_FINE_LOCATION = 1000;
@@ -172,7 +173,12 @@ public class InfoActivity extends AppCompatActivity {
                         latitude_src=latitude; longitude_src = longitude; location_src.setLatitude(latitude_src); location_src.setLongitude(longitude_src);
                         rentnumber=jsonResponse.getString("rentnumber");
                         MAC_Address=jsonResponse.getString("mac_address");
+                        allow=jsonResponse.getInt("allow");
                         System.out.println(MAC_Address+"MAC ADDRESS");
+                        System.out.println(allow+" ALLOW TEST_INFO");
+                        if(allow==1){
+                            content.setText("대기 중");
+                        }
                         rentBikeView.setVisibility(View.VISIBLE);
                         PhpConnect task = new PhpConnect();
                         try {
@@ -254,7 +260,7 @@ public class InfoActivity extends AppCompatActivity {
                     Log.v("gps", "gps Fail");
                     gps.showSettingsAlert();
                 }
-                if(!content.getText().equals("X")) {
+                if(!content.getText().equals("X")&&!content.getText().equals("대기 중")) {
                     location_dst=new Location("");
                     System.out.println(latitude_dst+"   "+longitude_dst+"   "+latitude_src+"   "+longitude_src);
                     location_dst.setLatitude(latitude_dst);

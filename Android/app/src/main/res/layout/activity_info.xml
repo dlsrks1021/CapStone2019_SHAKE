@@ -46,8 +46,8 @@
 
     <TextView
         android:id="@+id/content_info"
-        android:layout_width="40dp"
-        android:layout_height="65dp"
+        android:layout_width="67dp"
+        android:layout_height="61dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
@@ -55,7 +55,7 @@
         android:gravity="center"
         android:text=""
         android:textAlignment="center"
-        android:textSize="25dp"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.366"
@@ -224,7 +224,7 @@
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="106dp"
+        android:layout_width="87dp"
         android:layout_height="62dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -236,10 +236,10 @@
         android:textSize="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/infoPointView"
-        app:layout_constraintHorizontal_bias="0.635"
+        app:layout_constraintHorizontal_bias="0.658"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.346" />
+        app:layout_constraintVertical_bias="0.349" />
 
     <TextView
         android:id="@+id/infoPointView"

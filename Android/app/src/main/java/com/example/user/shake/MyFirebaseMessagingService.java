@@ -44,6 +44,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+            /*NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(MyFirebaseMessagingService.this)
+                    .setSmallIcon(R.drawable.shake_icon)
+                    .setContentTitle(remoteMessage.getNotification().getTitle())
+                    .setContentText(remoteMessage.getNotification().getBody());*/
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
@@ -62,11 +66,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private void scheduleJob() {
         //이건 아직 나중에 알아 볼것.
-        Log.d(TAG, "이것에 대해서는 나중에 알아 보자.");
+        //Log.d(TAG, "이것에 대해서는 나중에 알아 보자.");
     }
 
     private void handleNow() {
-        Log.d(TAG, "10초이내 처리됨");
+        //Log.d(TAG, "10초이내 처리됨");
     }
 
     private void sendNotification(String title, String messageBody) {

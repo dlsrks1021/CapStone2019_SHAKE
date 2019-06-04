@@ -34,6 +34,7 @@ public class ReportActivity extends AppCompatActivity {
     ArrayList<ListVO> list_itemArrayList;
     private ListView listview ;
     private ReportViewAdapter adapter;
+    String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,5 +106,8 @@ public class ReportActivity extends AppCompatActivity {
         RentInfoRequest rentInfoRequest = new RentInfoRequest(borrower, responseListener);
         RequestQueue queue = Volley.newRequestQueue(ReportActivity.this);
         queue.add(rentInfoRequest);
+
     }
+
+
 }
