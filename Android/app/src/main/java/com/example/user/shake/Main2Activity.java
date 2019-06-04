@@ -230,14 +230,8 @@ public class Main2Activity extends AppCompatActivity
 
     private void findRanker(){
 
-        ArrayList<Float> ratingList = new ArrayList<>();
-
         for (int i = 0; i < bikeList.size(); ++i){
-            ratingList.add(PhpRequest.getBikeRating(bikeList.get(i).getBikeCode()));
-        }
-
-        for (int i = 0; i < bikeList.size(); ++i){
-            float myRating =  ratingList.get(i);
+            float myRating =  bikeList.get(i).getBikeRating();
             int upRatingCount = 0;
             int myReviewCount = bikeList.get(i).getBike_review_count();
 
@@ -253,7 +247,7 @@ public class Main2Activity extends AppCompatActivity
                     continue;
 
 
-                rating = ratingList.get(j);
+                rating = bikeList.get(j).getBikeRating();
 
                 gapLatitude = bikeList.get(i).getBikeLatitude() - bikeList.get(j).getBikeLatitude();
                 gapLongitude = bikeList.get(i).getBikeLongitude() - bikeList.get(j).getBikeLongitude();
@@ -262,7 +256,7 @@ public class Main2Activity extends AppCompatActivity
                 gapLongitude *= 88.74;
                 distance = Math.sqrt(Math.pow(gapLatitude, 2) + Math.pow(gapLongitude, 2));
 
-                if (distance <= 3 && reviewCount >= 1){
+                if (distance <= 3 && reviewCount >= 5){
                     if (myRating < rating){
                         upRatingCount += 1;
                     }
