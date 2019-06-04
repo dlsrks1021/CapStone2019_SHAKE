@@ -36,6 +36,7 @@ public class RentActivity extends AppCompatActivity {
 
     TextView type,model,add_info,valid_time,select_time,select_cost;
     ImageView image;
+    Button reviewButton;
     int select_renttime=0;
     int insurance=0; int allow=0;
     int cost,current_point;
@@ -60,6 +61,7 @@ public class RentActivity extends AppCompatActivity {
 
         bikecode=intent.getStringExtra("bikecode");
         final Button rentbtn = (Button) findViewById(R.id.rent_button);
+        reviewButton = findViewById(R.id.rent_goToReview_button);
         select_time=(TextView)findViewById(R.id.explain10);
         select_cost=(TextView)findViewById(R.id.explain_bike_model2);
         //final Button return_btn = (Button) findViewById(R.id.return_button);
@@ -70,6 +72,18 @@ public class RentActivity extends AppCompatActivity {
         add_info=findViewById(R.id.explain_bike_explain);
         valid_time=findViewById(R.id.explain_bike_valid_time);
         image=findViewById(R.id.imageView_rent);
+
+        reviewButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent2 = new Intent(RentActivity.this, ReviewListActivity.class);
+                String userId = intent.getStringExtra("borrower");
+                intent2.putExtra("userId", userId);
+                intent2.putExtra("bikecode", bikecode);
+                intent2.putExtra("fromRentFlag", 1);
+                startActivity(intent2);
+            }
+        });
 
         //Test
         if(bikecode.equals("not implemented yet")) Glide.with(this).load("http://13.125.229.179/bike.png").into(image);
