@@ -8,7 +8,7 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="30dp"/>
+        android:layout_marginTop="50dp"/>
 
     <CheckBox
         android:id="@+id/review_list_checkBox"
@@ -17,4 +17,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="내 자전거 보기" />
+
+    <TextView
+        android:id="@+id/review_list_no_review_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:textSize="25dp"
+        android:visibility="invisible"
+        android:text="리뷰 목록이 없습니다." />
+
+    <Button
+        android:id="@+id/review_list_back_button"
+        android:layout_width="75dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="7dp"
+        android:text="Back" />
 </RelativeLayout>

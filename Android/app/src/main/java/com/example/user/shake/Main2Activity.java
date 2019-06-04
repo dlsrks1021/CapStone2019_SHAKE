@@ -17,6 +17,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -274,11 +275,6 @@ public class Main2Activity extends AppCompatActivity
             intent2.putExtra("userId", userID);
             Main2Activity.this.startActivity(intent2);
         }
-        else if(id == R.id.itemReview){
-            Intent intent2 = new Intent(Main2Activity.this, ReviewActivity.class);
-            intent2.putExtra("userId", userID);
-            Main2Activity.this.startActivity(intent2);
-        }
         else if (id == R.id.itemReviewList){
             Intent intent2 = new Intent(Main2Activity.this, ReviewListActivity.class);
             intent2.putExtra("userId", userID);
@@ -309,25 +305,18 @@ public class Main2Activity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (resultCode == RESULT_OK){
             if (requestCode == 2){
-                MarkerOptions markerOptions = new MarkerOptions();
                 BikeInfo newBike = (BikeInfo) data.getSerializableExtra("newBike");
                 bikeList.add(newBike);
                 LatLng bikeLocation = new LatLng(newBike.getBikeLatitude(), newBike.getBikeLongitude());
-                simpleAddMarker(mMap, markerOptions, bikeLocation, newBike.getBikeOwner(), "자전거 종류: " + newBike.getBikeType());
+                simpleAddMarker(mMap, bikeLocation, newBike.getBikeOwner(), "자전거 종류: " + newBike.getBikeType());
             }
         }
     }
 
     private void findRanker(){
 
-        ArrayList<Float> ratingList = new ArrayList<>();
-
         for (int i = 0; i < bikeList.size(); ++i){
-            ratingList.add(PhpRequest.getBikeRating(bikeList.get(i).getBikeCode()));
-        }
-
-        for (int i = 0; i < bikeList.size(); ++i){
-            float myRating =  ratingList.get(i);
+            float myRating =  bikeList.get(i).getBikeRating();
             int upRatingCount = 0;
             int myReviewCount = bikeList.get(i).getBike_review_count();
 
@@ -335,15 +324,12 @@ public class Main2Activity extends AppCompatActivity
                 continue;
             }
             for (int j = 0; j < bikeList.size(); ++j){
-                float rating = 0;
+                float rating = bikeList.get(j).getBikeRating();
                 double gapLatitude, gapLongitude, distance;
                 int reviewCount = bikeList.get(j).getBike_review_count();
-
-                if (i == j)
+                Log.d("tag", bikeList.get(i).getBikeCode()+"/"+Integer.toString(bikeList.get(i).getBike_review_count())+"  /  "+bikeList.get(j).getBikeCode()+"/"+bikeList.get(j).getBike_review_count());
+                if (i == j || reviewCount == 0 || rating == 0)
                     continue;
-
-
-                rating = ratingList.get(j);
 
                 gapLatitude = bikeList.get(i).getBikeLatitude() - bikeList.get(j).getBikeLatitude();
                 gapLongitude = bikeList.get(i).getBikeLongitude() - bikeList.get(j).getBikeLongitude();
@@ -352,7 +338,7 @@ public class Main2Activity extends AppCompatActivity
                 gapLongitude *= 88.74;
                 distance = Math.sqrt(Math.pow(gapLatitude, 2) + Math.pow(gapLongitude, 2));
 
-                if (distance <= 3 && reviewCount >= 1){
+                if (distance <= 3 && reviewCount >= 5){
                     if (myRating < rating){
                         upRatingCount += 1;
                     }
@@ -360,7 +346,7 @@ public class Main2Activity extends AppCompatActivity
                 if (upRatingCount >= 1)
                     break;
             }
-            if (upRatingCount < 1 && myReviewCount >= 1){
+            if (upRatingCount == 0 && myReviewCount >= 5){
                 rankerList.add(bikeList.get(i));
             }
         }
@@ -423,9 +409,9 @@ public class Main2Activity extends AppCompatActivity
                 }
             }
             if (rankerFlag == -1){
-                simpleAddMarker(map, markerOptions, bikeLocation, bikeList.get(i).getBikeOwner(), "자전거 종류: " + bikeList.get(i).getBikeType());
+                simpleAddMarker(map, bikeLocation, bikeList.get(i).getBikeOwner(), "자전거 종류: " + bikeList.get(i).getBikeType());
             }else{
-                rankerAddMarker(map, markerOptions, bikeLocation, rankerList.get(rankerFlag).getBikeOwner(), "자전거 종류: " + rankerList.get(rankerFlag).getBikeType());
+                rankerAddMarker(map, bikeLocation, rankerList.get(rankerFlag).getBikeOwner(), "자전거 종류: " + rankerList.get(rankerFlag).getBikeType());
             }
         }
 
@@ -445,14 +431,16 @@ public class Main2Activity extends AppCompatActivity
         mMap.setOnMarkerClickListener(this);
     }
 
-    private void simpleAddMarker(final GoogleMap map, MarkerOptions markerOptions, LatLng pos, String title, String context) {
+    private void simpleAddMarker(final GoogleMap map, LatLng pos, String title, String context) {
+        MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(pos);
         markerOptions.title(title);
         markerOptions.snippet(context);
         map.addMarker(markerOptions);
     }
 
-    private void rankerAddMarker(final GoogleMap map, MarkerOptions markerOptions, LatLng pos, String title, String context){
+    private void rankerAddMarker(final GoogleMap map, LatLng pos, String title, String context){
+        MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(pos);
         markerOptions.title(title);
         markerOptions.snippet(context);
@@ -469,7 +457,7 @@ public class Main2Activity extends AppCompatActivity
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(pos);
 
-        BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.person_icon);
+        BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.userpos_icon);
         Bitmap b=bitmapdraw.getBitmap();
         Bitmap smallMarker = Bitmap.createScaledBitmap(b, 100, 100, false);
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));

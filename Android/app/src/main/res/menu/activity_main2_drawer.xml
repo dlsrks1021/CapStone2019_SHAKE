@@ -6,7 +6,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/itemRent"
-            android:title="Rent" />
+            android:title="대여하기" />
         <item
             android:id="@+id/itemRegister"
             android:title="자전거등록" />
@@ -19,9 +19,6 @@
         <item
             android:id="@+id/itemtest"
             android:title="TEST Activity" />
-        <item
-            android:id="@+id/itemReview"
-            android:title="리뷰등록(TEST)" />
         <item
             android:id="@+id/itemReviewList"
             android:title="리뷰목록"/>
