@@ -193,12 +193,7 @@ public class Main2Activity extends AppCompatActivity
             Main2Activity.this.startActivity(intent2);
         }
         else if (id == R.id.itemcamera) {
-            Intent intent2 = new Intent(Main2Activity.this, FCMTestActivity.class);
-            intent2.putExtra("userId", userID);
-            Main2Activity.this.startActivity(intent2);
-        }
-        else if (id == R.id.itemtest) {
-            Intent intent2 = new Intent(Main2Activity.this, BluetoothActivity.class);
+            Intent intent2 = new Intent(Main2Activity.this, CheckAllowActivity.class);
             intent2.putExtra("userId", userID);
             Main2Activity.this.startActivity(intent2);
         }

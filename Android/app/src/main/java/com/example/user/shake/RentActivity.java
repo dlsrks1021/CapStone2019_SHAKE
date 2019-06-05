@@ -336,7 +336,7 @@ public class RentActivity extends AppCompatActivity {
                         execute_flag=1; //현재 시간보다 뒤인지 확인
                     }
                     for(int i=0;i<validtime.size()/2;i++){
-                        if(Integer.parseInt(day.split(" ")[1].split(":")[0])>=validtime.get(2*i)&&
+                        if(Integer.parseInt(day.split(" ")[1].split(":")[0])>=validtime.get(2*i)-1&&
                                 ((Integer.parseInt(return_time.split(" ")[1].split(":")[0])==validtime.get(2*i+1)&&Integer.parseInt(return_time.split(" ")[1].split(":")[1])==0)||Integer.parseInt(return_time.split(" ")[1].split(":")[0])<validtime.get(2*i+1)||
                                         (Integer.parseInt(day.split(" ")[0].split("-")[2])<Integer.parseInt(return_time.split(" ")[0].split("-")[2])&&Integer.parseInt(return_time.split(" ")[1].split("-")[0])<validtime.get(1)&&validtime.get(0)==0)
                         ||(Integer.parseInt(day.split(" ")[0].split("-")[2])<Integer.parseInt(return_time.split(" ")[0].split("-")[2])&&Integer.parseInt(return_time.split(" ")[1].split("-")[0])==validtime.get(1)&&validtime.get(0)==0&&Integer.parseInt(return_time.split(" ")[1].split(":")[1])==0)))
